@@ -73,7 +73,11 @@
   const navbar = $('#navbar');
 
   function handleNavbar() {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    const isScrolled = window.scrollY > 50;
+    const hasClass = navbar.classList.contains('scrolled');
+    if (isScrolled !== hasClass) {
+      navbar.classList.toggle('scrolled', isScrolled);
+    }
   }
 
   // ── SCROLL PROGRESS ────────────────────────────────
@@ -82,7 +86,8 @@
   let scrollMax = 0;
 
   function updateProgress() {
-    scrollProgress.style.width = scrollMax > 0 ? (window.scrollY / scrollMax * 100) + '%' : '0%';
+    const progress = scrollMax > 0 ? (window.scrollY / scrollMax) : 0;
+    scrollProgress.style.transform = `scaleX(${progress})`;
   }
 
   // ── HAMBURGER ──────────────────────────────────────
@@ -168,7 +173,11 @@
 
       item.words.forEach((word, i) => {
         const wordProgress = i / item.words.length;
-        word.classList.toggle('lit', clampedProgress > wordProgress);
+        const shouldBeLit = clampedProgress > wordProgress;
+        const isLit = word.classList.contains('lit');
+        if (shouldBeLit !== isLit) {
+          word.classList.toggle('lit', shouldBeLit);
+        }
       });
     });
   }
@@ -223,12 +232,20 @@
     let canvasMouseX = -1000, canvasMouseY = -1000;
     let animationFrameId = null;
     let isVisible = false;
+    let canvasRect = null;
+
+    function updateCanvasRect() {
+      if (canvas) {
+        canvasRect = canvas.getBoundingClientRect();
+      }
+    }
 
     function resize() {
       if (!canvas.parentElement) return;
       const rect = canvas.parentElement.getBoundingClientRect();
       width = canvas.width = rect.width;
       height = canvas.height = rect.height;
+      updateCanvasRect();
     }
 
     class Particle {
@@ -330,11 +347,11 @@
       animationFrameId = requestAnimationFrame(draw);
     }
 
-    // Mouse tracking relative to canvas
+    // Mouse tracking relative to canvas using cached rect
     const mouseMoveHandler = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      canvasMouseX = e.clientX - rect.left;
-      canvasMouseY = e.clientY - rect.top;
+      if (!canvasRect) updateCanvasRect();
+      canvasMouseX = e.clientX - canvasRect.left;
+      canvasMouseY = e.clientY - canvasRect.top;
     };
 
     const mouseLeaveHandler = () => {
@@ -346,9 +363,14 @@
       resize();
     };
 
+    const scrollHandler = () => {
+      updateCanvasRect();
+    };
+
     canvas.parentElement.addEventListener('mousemove', mouseMoveHandler);
     canvas.parentElement.addEventListener('mouseleave', mouseLeaveHandler);
     window.addEventListener('resize', resizeHandler);
+    window.addEventListener('scroll', scrollHandler, { passive: true });
 
     // Setup intersection observer for off-screen culling
     const observer = new IntersectionObserver((entries) => {
@@ -377,6 +399,7 @@
           canvas.parentElement.removeEventListener('mouseleave', mouseLeaveHandler);
         }
         window.removeEventListener('resize', resizeHandler);
+        window.removeEventListener('scroll', scrollHandler);
       }
     };
   }
@@ -508,6 +531,7 @@
 
   // ── DYNAMIC AMBIENT GLOW CHANGER ───────────────────
   const sections = $$('section[id]');
+  const ambientGlowEl = $('.ambient-glow');
   const ambientColors = {
     hero: 'rgba(34, 211, 238, 0.04)',       // Cyber Cyan
     dolor: 'rgba(244, 63, 94, 0.07)',       // Crimson Alert
@@ -526,8 +550,8 @@
       if (entry.isIntersecting) {
         const id = entry.target.id;
         const color = ambientColors[id];
-        if (color) {
-          document.documentElement.style.setProperty('--ambient-glow', color);
+        if (color && ambientGlowEl) {
+          ambientGlowEl.style.setProperty('--ambient-glow', color);
         }
       }
     });
