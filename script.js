@@ -1068,17 +1068,36 @@
   // Ej: ['09:00 - 10:00', '15:00 - 16:00']
   async function fetchBookedSlots(date) {
     try {
-      // Construir rango de inicio y fin del día en UTC (Supabase guarda ISO strings)
+      // booking_date en Supabase contiene el ISO string del frontend (toISOString())
+      // que está en UTC. Para no fallar por diferencias de timezone, buscamos
+      // todos los registros y filtramos por dateFormatted O hacemos una query
+      // más amplia cogiendo el día anterior y posterior en UTC.
+
       const year  = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day   = String(date.getDate()).padStart(2, '0');
-      const dayStart = `${year}-${month}-${day}T00:00:00`;
-      const dayEnd   = `${year}-${month}-${day}T23:59:59`;
 
-      const url = `${SUPABASE_URL}/rest/v1/xtech_leads` +
-        `?select=booking_slot` +
-        `&booking_date=gte.${encodeURIComponent(dayStart)}` +
-        `&booking_date=lte.${encodeURIComponent(dayEnd)}`;
+      // Día anterior en UTC (cubre el caso de zona horaria +2: un booking a las 00:00
+      // local son las 22:00 UTC del día anterior)
+      const prevDate = new Date(date);
+      prevDate.setDate(prevDate.getDate() - 1);
+      const prevYear  = prevDate.getFullYear();
+      const prevMonth = String(prevDate.getMonth() + 1).padStart(2, '0');
+      const prevDay   = String(prevDate.getDate()).padStart(2, '0');
+
+      // Rango amplio: desde las 22:00 UTC del día anterior hasta las 22:00 UTC del día actual
+      // Esto cubre horas 00:00-23:59 en España (UTC+2) con margen seguro
+      const rangeStart = `${prevYear}-${prevMonth}-${prevDay}T22:00:00.000Z`;
+      const rangeEnd   = `${year}-${month}-${day}T22:00:00.000Z`;
+
+      const url = `${SUPABASE_URL}/rest/v1/xtech_booked_slots` +
+        `?select=booking_slot,booking_date` +
+        `&booking_date=gte.${encodeURIComponent(rangeStart)}` +
+        `&booking_date=lt.${encodeURIComponent(rangeEnd)}` +
+        `&order=booking_date.asc`;
+
+      console.log('[XTech Booking] Consultando Supabase para:', `${year}-${month}-${day}`);
+      console.log('[XTech Booking] URL query:', url);
 
       const res = await fetch(url, {
         headers: {
@@ -1088,16 +1107,27 @@
         }
       });
 
+      console.log('[XTech Booking] HTTP status:', res.status);
+
       if (!res.ok) {
-        console.warn('[XTech Booking] No se pudo consultar slots ocupados:', res.status);
-        return []; // Fallback: mostrar todos libres
+        const errBody = await res.text();
+        console.error('[XTech Booking] Error Supabase:', res.status, errBody);
+        // Si es 401 = RLS bloqueando. Si es 400 = nombre de columna mal.
+        if (res.status === 401 || res.status === 403) {
+          console.error('[XTech Booking] ⚠️ RLS bloqueando lectura anon. Ve a Supabase → Authentication → Policies y añade una política SELECT para anon en xtech_leads.');
+        }
+        return [];
       }
 
       const rows = await res.json();
-      // rows = [{ booking_slot: '09:00 - 10:00' }, ...]
-      return rows.map(r => r.booking_slot).filter(Boolean);
+      console.log('[XTech Booking] Filas encontradas:', rows.length, rows);
+
+      const slots = rows.map(r => r.booking_slot).filter(Boolean);
+      console.log('[XTech Booking] Slots ocupados:', slots);
+      return slots;
+
     } catch (err) {
-      console.warn('[XTech Booking] Error consultando Supabase:', err);
+      console.error('[XTech Booking] Error de red consultando Supabase:', err);
       return []; // Fallback seguro: no bloquear nada
     }
   }
