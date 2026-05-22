@@ -243,8 +243,12 @@
     function resize() {
       if (!canvas.parentElement) return;
       const rect = canvas.parentElement.getBoundingClientRect();
-      width = canvas.width = rect.width;
-      height = canvas.height = rect.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       updateCanvasRect();
     }
 
@@ -404,22 +408,22 @@
     };
   }
 
-  // Init hero canvas
+  // Init hero canvas (Optimized count for 60fps on Retina displays)
   initParticles('#particle-canvas', {
-    count: 90,
-    maxDist: 160,
+    count: 45,
+    maxDist: 130,
     speed: 0.35,
-    mouseRadius: 220,
+    mouseRadius: 200,
     baseColor: [34, 211, 238],
     accentColor: [56, 189, 248],
   });
 
-  // Init CTA canvas (smaller, subtler)
+  // Init CTA canvas (Optimized count for 60fps on Retina displays)
   initParticles('#cta-canvas', {
-    count: 40,
-    maxDist: 120,
+    count: 20,
+    maxDist: 100,
     speed: 0.2,
-    mouseRadius: 180,
+    mouseRadius: 160,
     baseColor: [52, 211, 153],
     accentColor: [34, 211, 238],
   });
@@ -833,6 +837,225 @@
       openProject(card.dataset.project);
     });
     card.style.cursor = 'none';
+  });
+
+  // ── COOKIE CONSENT BANNER LOGIC ────────────────────
+  const cookieBanner = $('#cookie-banner');
+  const cbAccept = $('#cb-accept');
+  const cbReject = $('#cb-reject');
+  const btnResetCookies = $('#btn-reset-cookies');
+
+  if (cookieBanner) {
+    const consent = localStorage.getItem('cookie_consent');
+    if (!consent) {
+      setTimeout(() => {
+        cookieBanner.classList.add('show');
+        cookieBanner.setAttribute('aria-hidden', 'false');
+      }, 1500);
+    }
+
+    if (cbAccept) {
+      cbAccept.addEventListener('click', () => {
+        localStorage.setItem('cookie_consent', 'accepted');
+        cookieBanner.classList.remove('show');
+        cookieBanner.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    if (cbReject) {
+      cbReject.addEventListener('click', () => {
+        localStorage.setItem('cookie_consent', 'rejected');
+        cookieBanner.classList.remove('show');
+        cookieBanner.setAttribute('aria-hidden', 'true');
+      });
+    }
+  }
+
+  if (btnResetCookies) {
+    btnResetCookies.addEventListener('click', () => {
+      localStorage.removeItem('cookie_consent');
+      window.location.reload();
+    });
+  }
+
+  // ── LEGAL CENTER MODAL LOGIC ───────────────────────
+  const legalModal = $('#legal-modal');
+  const legalClose = $('#legal-close');
+  const legalScroll = $('#legal-scroll');
+  const legalTabBtns = $$('.legal-tab-btn');
+  const legalTabContents = $$('.legal-tab-content');
+
+  function openLegal(tabName = 'aviso') {
+    if (!legalModal) return;
+    legalModal.classList.add('open');
+    legalModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+
+    // Switch to target tab
+    switchLegalTab(tabName);
+
+    if (legalScroll) {
+      legalScroll.scrollTop = 0;
+    }
+  }
+
+  function closeLegal() {
+    if (!legalModal) return;
+    legalModal.classList.remove('open');
+    legalModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+  }
+
+  function switchLegalTab(tabName) {
+    legalTabBtns.forEach(btn => {
+      const active = btn.dataset.legalTab === tabName;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+
+    legalTabContents.forEach(content => {
+      const active = content.id === `legal-${tabName}`;
+      content.classList.toggle('active', active);
+    });
+  }
+
+  // Bind triggers
+  $$('.legal-trigger').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tabName = trigger.dataset.legal || 'aviso';
+      openLegal(tabName);
+    });
+  });
+
+  // Bind tabs
+  legalTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchLegalTab(btn.dataset.legalTab);
+    });
+  });
+
+  // Bind close buttons
+  if (legalClose) {
+    legalClose.addEventListener('click', closeLegal);
+  }
+
+  if (legalModal) {
+    const legalBackdrop = legalModal.querySelector('.pm-backdrop');
+    if (legalBackdrop) {
+      legalBackdrop.addEventListener('click', closeLegal);
+    }
+  }
+
+  // Esc key closes legal modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && legalModal && legalModal.classList.contains('open')) {
+      closeLegal();
+    }
+  });
+
+  // ── B2B AUTOMATION ROI CALCULATOR ENGINE ───────────
+  const sliderHours = $('#slider-hours');
+  const sliderCost = $('#slider-cost');
+  const valHours = $('#val-hours');
+  const valCost = $('#val-cost');
+  const roiAnnualSavings = $('#roi-annual-savings');
+  const roiMonthlyHours = $('#roi-monthly-hours');
+  const roiPayback = $('#roi-payback');
+
+  function updateROI() {
+    if (!sliderHours || !sliderCost) return;
+
+    const hoursVal = parseInt(sliderHours.value, 10);
+    const costVal = parseInt(sliderCost.value, 10);
+
+    // Update range numeric indicator labels
+    if (valHours) valHours.textContent = hoursVal;
+    if (valCost) valCost.textContent = costVal;
+
+    sliderHours.setAttribute('aria-valuenow', hoursVal);
+    sliderCost.setAttribute('aria-valuenow', costVal);
+
+    // Beautiful dynamic range track filling (fill color behind the thumb)
+    const hoursPct = ((hoursVal - 5) / (80 - 5)) * 100;
+    sliderHours.style.background = `linear-gradient(to right, var(--accent) ${hoursPct}%, rgba(255, 255, 255, 0.08) ${hoursPct}%)`;
+
+    const costPct = ((costVal - 15) / (100 - 15)) * 100;
+    sliderCost.style.background = `linear-gradient(to right, var(--accent) ${costPct}%, rgba(255, 255, 255, 0.08) ${costPct}%)`;
+
+    // Calculation logic:
+    // Hours saved per month = Hours * 4.33 * 0.85
+    // Annual Savings = Hours * 52 * Cost * 0.85
+    const annualSavings = Math.round(hoursVal * 52 * costVal * 0.85);
+    const monthlyHours = Math.round(hoursVal * 4.33 * 0.85);
+
+    let paybackText = '';
+    if (annualSavings > 15000) {
+      paybackText = 'Amortizado en < 1 mes';
+    } else if (annualSavings > 5000) {
+      paybackText = 'Amortizado en < 2 meses';
+    } else {
+      paybackText = 'Amortizado en < 3 meses';
+    }
+
+    // Update the displays with nice Spanish formatting
+    if (roiAnnualSavings) {
+      roiAnnualSavings.textContent = annualSavings.toLocaleString('es-ES');
+    }
+    if (roiMonthlyHours) {
+      roiMonthlyHours.textContent = `${monthlyHours} h`;
+    }
+    if (roiPayback) {
+      roiPayback.textContent = paybackText;
+    }
+  }
+
+  if (sliderHours && sliderCost) {
+    sliderHours.addEventListener('input', updateROI);
+    sliderCost.addEventListener('input', updateROI);
+    // Initial run
+    updateROI();
+  }
+
+  // ── INTERACTIVE SERVICE ACCORDIONS ──────────────────
+  const serviceRows = $$('.service-row');
+  
+  serviceRows.forEach(row => {
+    const header = row.querySelector('.service-row-main');
+    const detail = row.querySelector('.service-detail');
+    if (!header || !detail) return;
+
+    header.addEventListener('click', () => {
+      const isOpen = row.classList.contains('open');
+
+      // Collapse all other rows
+      serviceRows.forEach(r => {
+        if (r !== row) {
+          r.classList.remove('open');
+          const d = r.querySelector('.service-detail');
+          if (d) d.style.maxHeight = '0px';
+        }
+      });
+
+      // Toggle current row
+      if (isOpen) {
+        row.classList.remove('open');
+        detail.style.maxHeight = '0px';
+      } else {
+        row.classList.add('open');
+        detail.style.maxHeight = detail.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Handle window resizing to adjust open accordion height dynamically
+  window.addEventListener('resize', () => {
+    serviceRows.forEach(row => {
+      if (row.classList.contains('open')) {
+        const detail = row.querySelector('.service-detail');
+        if (detail) detail.style.maxHeight = detail.scrollHeight + 'px';
+      }
+    });
   });
 
 })();
