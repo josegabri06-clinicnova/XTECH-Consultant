@@ -11,6 +11,7 @@
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
   const lerp = (a, b, t) => a + (b - a) * t;
+  let globalScrollVelocity = 0;
 
   // ── PAGE LOAD ──────────────────────────────────────
   const overlay = $('#page-overlay');
@@ -284,10 +285,25 @@
         const alpha = p.baseAlpha + proximity * 0.5;
         const [r, g, b] = proximity > 0.3 ? config.accentColor : config.baseColor;
 
+        // Apply scroll-warp physics
+        // As scroll velocity increases, stretch particles vertically
+        const velocityEffect = globalScrollVelocity * 1.5;
+        
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius + proximity * 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        ctx.fill();
+        if (Math.abs(velocityEffect) > 0.25) {
+          // Draw warp streak lines
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          ctx.lineWidth = p.radius + proximity * 1.5;
+          ctx.moveTo(p.x, p.y);
+          // Stretch vertically based on velocity
+          ctx.lineTo(p.x, p.y - velocityEffect * (p.radius * 8));
+          ctx.stroke();
+        } else {
+          // Draw standard circular node
+          ctx.arc(p.x, p.y, p.radius + proximity * 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          ctx.fill();
+        }
 
         // Glow for close particles
         if (proximity > 0.3) {
@@ -379,24 +395,97 @@
     });
   });
 
-  // ── UNIFIED SCROLL HANDLER ─────────────────────────
-  let ticking = false;
-  function onScroll() {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        handleNavbar();
-        updateProgress();
-        updateCinemaText();
-        ticking = false;
-      });
-      ticking = true;
+  // ── LENIS SMOOTH SCROLL & UNIFIED SCROLL ENGINE ────
+  let lenis = null;
+  if (typeof Lenis !== 'undefined') {
+    lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth exponential deceleration
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 0.9,
+      smoothTouch: false,
+      infinite: false,
+    });
+
+    lenis.on('scroll', (e) => {
+      // Capture velocity (pixels/ms)
+      globalScrollVelocity = e.velocity;
+      
+      // Execute unified page scroll elements
+      handleNavbar();
+      updateProgress();
+      updateCinemaText();
+    });
+
+    // Integrated RequestAnimationFrame loop for Lenis ticks & inertia deceleration
+    function raf(time) {
+      lenis.raf(time);
+      
+      // Decelerate the velocity smoothly back to 0 when scrolling stops
+      if (Math.abs(globalScrollVelocity) > 0.02) {
+        globalScrollVelocity = lerp(globalScrollVelocity, 0, 0.08);
+      } else {
+        globalScrollVelocity = 0;
+      }
+      
+      requestAnimationFrame(raf);
     }
+    requestAnimationFrame(raf);
+  } else {
+    // Elegant fallback if Lenis CDN is blocked or unavailable
+    let lastScrollY = window.scrollY;
+    let velocityTimeout = null;
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      globalScrollVelocity = (currentScrollY - lastScrollY) * 0.15;
+      lastScrollY = currentScrollY;
+
+      clearTimeout(velocityTimeout);
+      velocityTimeout = setTimeout(() => {
+        globalScrollVelocity = 0;
+      }, 100);
+
+      handleNavbar();
+      updateProgress();
+      updateCinemaText();
+    }, { passive: true });
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
+  // Handle default initial calls
   handleNavbar();
   updateProgress();
   updateCinemaText();
+
+  // ── DYNAMIC AMBIENT GLOW CHANGER ───────────────────
+  const sections = $$('section[id]');
+  const ambientColors = {
+    hero: 'rgba(34, 211, 238, 0.04)',       // Cyber Cyan
+    dolor: 'rgba(244, 63, 94, 0.07)',       // Crimson Alert
+    solucion: 'rgba(16, 185, 129, 0.05)',    // Emerald Alleviation
+    servicios: 'rgba(56, 189, 248, 0.05)',   // Sky Blue Tech
+    proyectos: 'rgba(139, 92, 246, 0.05)',   // Violet Production
+    proceso: 'rgba(251, 191, 36, 0.05)',     // Amber Path
+    diferenciacion: 'rgba(34, 211, 238, 0.04)',
+    testimonios: 'rgba(16, 185, 129, 0.05)',
+    faq: 'rgba(139, 92, 246, 0.05)',
+    contacto: 'rgba(251, 146, 60, 0.07)'     // Gold final CTA
+  };
+
+  const ambientObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        const color = ambientColors[id];
+        if (color) {
+          document.documentElement.style.setProperty('--ambient-glow', color);
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach(sec => ambientObserver.observe(sec));
 
   // ══════════════════════════════════════════════════════
   // PROJECT MODAL — Immersive Full-Screen Experience

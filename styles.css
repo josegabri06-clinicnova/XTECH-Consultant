@@ -27,8 +27,19 @@
   --radius: 10px;
   --radius-full: 9999px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --container: 1100px;
-  --pad: clamp(20px, 5vw, 48px);
+  --ambient-glow: rgba(34, 211, 238, 0.05);
+}
+
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at 50% 50%, var(--ambient-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -2;
+  filter: blur(100px);
+  transition: background 1.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ── RESET ──────────────────────────────────────────── */
