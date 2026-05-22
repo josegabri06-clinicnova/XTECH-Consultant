@@ -7,6 +7,10 @@
 (function () {
   'use strict';
 
+  // ── INTEGRATIONS CONFIG ────────────────────────────
+  // Pega aquí tu webhook de n8n o endpoint de Supabase para recibir la cita
+  const N8N_BOOKING_WEBHOOK_URL = "";
+
   // ── UTILS ──────────────────────────────────────────
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -1027,5 +1031,260 @@
       }
     });
   });
+
+  // ── B2B CALENDAR BOOKING SYSTEM ─────────────────────
+  const calendarDaysGrid = $('#calendar-days-grid');
+  const calendarMonthYear = $('#calendar-month-year');
+  const bookingSlotsContainer = $('#booking-slots-container');
+  const slotsGrid = $('#slots-grid');
+  const selectedDayLabel = $('#selected-day-label');
+  const btnToStep2 = $('#to-step-2');
+  const btnBackToStep1 = $('#back-to-step-1');
+  const btnResetBooking = $('#reset-booking-btn');
+  const bookingProgressBar = $('#booking-progress-bar');
+  const bookingForm = $('#booking-form');
+  const successDateLabel = $('#success-date-label');
+
+  let selectedDate = null;
+  let selectedSlot = null;
+
+  // Las horas laborables de 1h
+  const workingHours = [
+    '09:00 - 10:00',
+    '10:00 - 11:00',
+    '11:00 - 12:00',
+    '12:00 - 13:00',
+    '15:00 - 16:00',
+    '16:00 - 17:00',
+    '17:00 - 18:00',
+    '17:00 - 18:00'
+  ];
+
+  // Nombres de meses en español
+  const monthNames = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
+  const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+  function initBookingSystem() {
+    if (!calendarDaysGrid) return;
+    renderCalendar();
+    
+    // Acciones de Pasos
+    btnToStep2.addEventListener('click', () => changeStep(2));
+    btnBackToStep1.addEventListener('click', () => changeStep(1));
+    if (btnResetBooking) {
+      btnResetBooking.addEventListener('click', () => {
+        // Reset state
+        selectedDate = null;
+        selectedSlot = null;
+        bookingForm.reset();
+        renderCalendar();
+        bookingSlotsContainer.style.display = 'none';
+        btnToStep2.classList.add('disabled');
+        btnToStep2.setAttribute('disabled', 'true');
+        changeStep(1);
+      });
+    }
+
+    // Form Submit
+    bookingForm.addEventListener('submit', handleBookingSubmit);
+  }
+
+  function renderCalendar() {
+    const today = new Date();
+    calendarDaysGrid.innerHTML = '';
+    
+    // Mostrar mes actual / siguiente
+    calendarMonthYear.textContent = `${monthNames[today.getMonth()]} / ${monthNames[(today.getMonth() + 1) % 12]} ${today.getFullYear()}`;
+
+    // Obtener los próximos 14 días naturales para filtrar 10 días laborables válidos
+    let dayCounter = 0;
+    let checkDate = new Date(today);
+    // Empezar mañana para evitar reservas en el mismo día
+    checkDate.setDate(checkDate.getDate() + 1);
+
+    // Generar la rejilla de días
+    const daysToRender = [];
+    
+    while (dayCounter < 12) {
+      const dayOfWeek = checkDate.getDay();
+      // Bloquear fines de semana (0 = Domingo, 6 = Sábado)
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        daysToRender.push(new Date(checkDate));
+        dayCounter++;
+      }
+      checkDate.setDate(checkDate.getDate() + 1);
+    }
+
+    // Renderizar botones redondos con el número y el nombre abreviado del día
+    daysToRender.forEach(date => {
+      const dayDiv = document.createElement('button');
+      dayDiv.type = "button";
+      dayDiv.className = 'calendar-day';
+      
+      const dayNum = date.getDate();
+      dayDiv.textContent = dayNum;
+      dayDiv.title = `${dayNames[date.getDay()]} ${dayNum} de ${monthNames[date.getMonth()]}`;
+
+      // Si es el seleccionado
+      if (selectedDate && isSameDay(date, selectedDate)) {
+        dayDiv.classList.add('selected');
+      }
+
+      dayDiv.addEventListener('click', () => {
+        // Deseleccionar anteriores
+        $$('.calendar-day', calendarDaysGrid).forEach(el => el.classList.remove('selected'));
+        dayDiv.classList.add('selected');
+        
+        selectedDate = date;
+        selectedSlot = null; // reset slot al cambiar día
+        
+        // Deshabilitar botón continuar
+        btnToStep2.classList.add('disabled');
+        btnToStep2.setAttribute('disabled', 'true');
+
+        // Mostrar slots
+        showSlotsForDate(date);
+      });
+
+      calendarDaysGrid.appendChild(dayDiv);
+    });
+  }
+
+  function isSameDay(d1, d2) {
+    return d1.getFullYear() === d2.getFullYear() &&
+           d1.getMonth() === d2.getMonth() &&
+           d1.getDate() === d2.getDate();
+  }
+
+  function showSlotsForDate(date) {
+    const formattedDate = `${dayNames[date.getDay()]} ${date.getDate()} de ${monthNames[date.getMonth()]}`;
+    selectedDayLabel.textContent = formattedDate;
+    
+    slotsGrid.innerHTML = '';
+    
+    workingHours.forEach(hour => {
+      const slotBtn = document.createElement('button');
+      slotBtn.type = "button";
+      slotBtn.className = 'slot-btn';
+      slotBtn.textContent = hour;
+      
+      if (selectedSlot === hour) {
+        slotBtn.classList.add('selected');
+      }
+
+      slotBtn.addEventListener('click', () => {
+        $$('.slot-btn', slotsGrid).forEach(el => el.classList.remove('selected'));
+        slotBtn.classList.add('selected');
+        
+        selectedSlot = hour;
+        
+        // Habilitar botón de continuar
+        btnToStep2.classList.remove('disabled');
+        btnToStep2.removeAttribute('disabled');
+      });
+
+      slotsGrid.appendChild(slotBtn);
+    });
+
+    bookingSlotsContainer.style.display = 'block';
+    
+    // Scroll suave hacia los slots si es móvil
+    if (window.innerWidth < 768) {
+      bookingSlotsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function changeStep(stepNum) {
+    // Esconder todos los pasos
+    $$('.booking-step').forEach(el => el.classList.remove('active'));
+    
+    // Activar paso
+    $(`#step-${stepNum}`).classList.add('active');
+    
+    // Actualizar barra de progreso
+    if (stepNum === 1) {
+      bookingProgressBar.style.width = '33%';
+    } else if (stepNum === 2) {
+      bookingProgressBar.style.width = '66%';
+    } else if (stepNum === 3) {
+      bookingProgressBar.style.width = '100%';
+    }
+    
+    // Scroll suave arriba de la tarjeta
+    $('.booking-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  async function handleBookingSubmit(e) {
+    e.preventDefault();
+    
+    const submitBtn = $('#submit-booking-btn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Cambiar estado a cargando
+    submitBtn.classList.add('disabled');
+    submitBtn.setAttribute('disabled', 'true');
+    submitBtn.innerHTML = `<span>Procesando...</span>`;
+
+    // Datos del formulario
+    const name = $('#b-name').value;
+    const email = $('#b-email').value;
+    const company = $('#b-company').value;
+    const revenue = $('#b-revenue').value;
+    const bottleneck = $('#b-bottleneck').value;
+
+    const formattedDate = `${dayNames[selectedDate.getDay()]}, ${selectedDate.getDate()} de ${monthNames[selectedDate.getMonth()]} de ${selectedDate.getFullYear()}`;
+
+    const payload = {
+      date: selectedDate.toISOString(),
+      dateFormatted: formattedDate,
+      slot: selectedSlot,
+      name: name,
+      email: email,
+      company: company,
+      revenue: revenue,
+      bottleneck: bottleneck,
+      submittedAt: new Date().toISOString()
+    };
+
+    // Guardar copia local de contingencia
+    const localBookings = JSON.parse(localStorage.getItem('xtech_bookings') || '[]');
+    localBookings.push(payload);
+    localStorage.setItem('xtech_bookings', JSON.stringify(localBookings));
+
+    // Intentar disparar webhook si está configurado
+    if (N8N_BOOKING_WEBHOOK_URL) {
+      try {
+        const response = await fetch(N8N_BOOKING_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+          console.warn('Respuesta de webhook no exitosa:', response.status);
+        }
+      } catch (err) {
+        console.error('Error al enviar webhook de n8n:', err);
+      }
+    }
+
+    // Actualizar pantalla de éxito
+    successDateLabel.textContent = `${formattedDate} a las ${selectedSlot.split(' - ')[0]}`;
+    
+    // Transicionar al paso 3
+    changeStep(3);
+    
+    // Restablecer botón
+    submitBtn.classList.remove('disabled');
+    submitBtn.removeAttribute('disabled');
+    submitBtn.innerHTML = originalText;
+  }
+
+  // Inicializar todo
+  initBookingSystem();
 
 })();

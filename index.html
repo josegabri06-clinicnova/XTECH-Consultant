@@ -1050,18 +1050,172 @@
     <canvas id="cta-canvas" aria-hidden="true"></canvas>
     <div class="grid-mesh" aria-hidden="true"></div>
     <div class="container">
-      <div class="cta-inner reveal-up">
-        <div class="section-label">Da el paso</div>
-        <h2 class="cta-title">
-          Cada semana que pasa sin automatizar<br>
-          <span class="text-gradient">es dinero que se quema.</span>
-        </h2>
-        <p class="cta-desc">30 minutos. Sin compromiso. Te damos un diagnóstico claro de qué se puede automatizar en tu negocio y cuánto vas a ahorrar. Si no te convence, no pasa nada. Pero al menos sabrás lo que estás dejando sobre la mesa.</p>
-        <a href="mailto:xtechconsultantit@gmail.com" class="btn-primary btn-lg magnetic-btn" id="final-cta">
-          <span>Hablar con un experto</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-        </a>
-        <p class="cta-fine">Sin coste · Sin compromiso · Diagnóstico gratuito</p>
+      <div class="booking-grid">
+        <!-- Columna Izquierda: Propuesta de valor de la cita -->
+        <div class="booking-left reveal-up">
+          <div class="section-label">Da el paso</div>
+          <h2 class="cta-title">
+            Cada semana que pasa sin automatizar<br>
+            <span class="text-gradient">es dinero que se quema.</span>
+          </h2>
+          <p class="cta-desc">Reserva una sesión de diagnóstico tecnológico gratuita de 1 hora. Analizaremos tus ineficiencias operativas y saldrás con un plan de automatización e IA claro y medible. Sin compromiso alguno.</p>
+          
+          <ul class="booking-features">
+            <li>
+              <div class="bf-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="bf-content">
+                <strong>Auditoría de Ineficiencias</strong>
+                <p>Identificamos tareas manuales repetitivas que queman tiempo de tu equipo.</p>
+              </div>
+            </li>
+            <li>
+              <div class="bf-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="bf-content">
+                <strong>Diseño de Blueprint Técnico</strong>
+                <p>Propuesta de flujo con automatizaciones e Inteligencia Artificial.</p>
+              </div>
+            </li>
+            <li>
+              <div class="bf-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div class="bf-content">
+                <strong>Estimación del ROI Real</strong>
+                <p>Calculamos el retorno financiero y de tiempo exacto antes de empezar.</p>
+              </div>
+            </li>
+          </ul>
+
+          <div class="booking-trust-badges">
+            <span class="trust-badge">100% Gratuito</span>
+            <span class="trust-badge">Sin Compromiso</span>
+            <span class="trust-badge">Videollamada de 1h</span>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: El Widget del Calendario de Citas -->
+        <div class="booking-right reveal-up" style="--d:0.1s">
+          <div class="booking-card">
+            <!-- Progress Bar -->
+            <div class="booking-progress">
+              <div class="bp-bar" id="booking-progress-bar" style="width: 33%"></div>
+            </div>
+
+            <!-- STEP 1: SELECT DAY AND SLOT -->
+            <div class="booking-step active" id="step-1">
+              <h3 class="booking-step-title">1. Selecciona Fecha y Hora</h3>
+              <p class="booking-step-desc">Elige un día laboral y tu hora preferida para la llamada de 1 hora.</p>
+              
+              <!-- Calendario Reactivo -->
+              <div class="booking-calendar-wrapper">
+                <div class="calendar-header">
+                  <span class="calendar-month-year" id="calendar-month-year">Mayo / Junio 2026</span>
+                </div>
+                <div class="calendar-weekdays">
+                  <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+                </div>
+                <div class="calendar-days" id="calendar-days-grid">
+                  <!-- Se generarán dinámicamente -->
+                </div>
+              </div>
+
+              <!-- Selector de Horas (Se revela al hacer clic en un día válido) -->
+              <div class="booking-slots-container" id="booking-slots-container" style="display: none;">
+                <h4 class="slots-header">Horas disponibles para el <span id="selected-day-label">...</span>:</h4>
+                <div class="slots-grid" id="slots-grid">
+                  <!-- Se generarán dinámicamente de 1h de duración -->
+                </div>
+              </div>
+
+              <div class="booking-actions">
+                <button type="button" class="btn-primary btn-full disabled" id="to-step-2" disabled>
+                  <span>Continuar al Registro</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2: QUALIFY FORM -->
+            <div class="booking-step" id="step-2">
+              <h3 class="booking-step-title">2. Detalles de la Reunión</h3>
+              <p class="booking-step-desc">Cuéntanos sobre tu negocio para preparar un diagnóstico preciso.</p>
+              
+              <form id="booking-form" class="booking-form-element">
+                <div class="booking-field-row">
+                  <div class="booking-field">
+                    <label for="b-name">Tu nombre completo</label>
+                    <input type="text" id="b-name" required placeholder="Ej. Carlos Mendoza">
+                  </div>
+                  <div class="booking-field">
+                    <label for="b-email">Email corporativo</label>
+                    <input type="email" id="b-email" required placeholder="carlos@empresa.com">
+                  </div>
+                </div>
+
+                <div class="booking-field-row">
+                  <div class="booking-field">
+                    <label for="b-company">Nombre de tu empresa</label>
+                    <input type="text" id="b-company" required placeholder="Ej. Nova S.L.">
+                  </div>
+                  <div class="booking-field">
+                    <label for="b-revenue">Facturación estimada</label>
+                    <select id="b-revenue" required>
+                      <option value="" disabled selected>Selecciona un rango...</option>
+                      <option value="<100k">Menos de 100k€ / año</option>
+                      <option value="100k-500k">100k€ - 500k€ / año</option>
+                      <option value="500k-2M">500k€ - 2M€ / año</option>
+                      <option value=">2M">Más de 2M€ / año</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="booking-field">
+                  <label for="b-bottleneck">¿Cuál es tu mayor cuello de botella o tarea repetitiva hoy?</label>
+                  <textarea id="b-bottleneck" rows="3" required placeholder="Ej. Perdemos 10 horas semanales clasificando correos de facturas y cargando datos a mano..."></textarea>
+                </div>
+
+                <div class="booking-actions multi-actions">
+                  <button type="button" class="btn-cb btn-cb-ghost" id="back-to-step-1">
+                    <span>Atrás</span>
+                  </button>
+                  <button type="submit" class="btn-primary btn-flex" id="submit-booking-btn">
+                    <span>Confirmar Cita de 1h</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- STEP 3: SUCCESS ANIMATION -->
+            <div class="booking-step" id="step-3">
+              <div class="booking-success-wrapper">
+                <div class="success-icon-ring">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="success-checkmark"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <h3 class="booking-step-title text-center">¡Cita Solicitada con Éxito!</h3>
+                <p class="booking-step-desc text-center">
+                  Hemos agendado tu sesión de diagnóstico para el <br>
+                  <strong class="text-gradient" id="success-date-label">Lunes, 25 de Mayo a las 10:00</strong>.
+                </p>
+                <div class="success-details-card">
+                  <p>📩 Te hemos enviado un correo electrónico de confirmación con la invitación de Google Meet y los detalles de la agenda.</p>
+                  <p>👤 Si es necesario, nos pondremos en contacto contigo previamente para solicitar alguna aclaración adicional sobre tu caso.</p>
+                </div>
+                <div class="booking-actions">
+                  <button type="button" class="btn-primary btn-full" id="reset-booking-btn">
+                    <span>Reservar otra llamada</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
