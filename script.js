@@ -30,16 +30,14 @@
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    cursorDot.style.left = mouseX + 'px';
-    cursorDot.style.top = mouseY + 'px';
   });
 
   // Smooth ring follow
   function animateCursor() {
     ringX = lerp(ringX, mouseX, 0.12);
     ringY = lerp(ringY, mouseY, 0.12);
-    cursorRing.style.left = ringX + 'px';
-    cursorRing.style.top = ringY + 'px';
+    cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+    cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
     requestAnimationFrame(animateCursor);
   }
   animateCursor();
@@ -81,9 +79,10 @@
   // ── SCROLL PROGRESS ────────────────────────────────
   const scrollProgress = $('#scroll-progress');
 
+  let scrollMax = 0;
+
   function updateProgress() {
-    const h = document.documentElement.scrollHeight - window.innerHeight;
-    scrollProgress.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    scrollProgress.style.width = scrollMax > 0 ? (window.scrollY / scrollMax * 100) + '%' : '0%';
   }
 
   // ── HAMBURGER ──────────────────────────────────────
@@ -120,31 +119,55 @@
   $$('.reveal-up').forEach(el => revealObserver.observe(el));
 
   // ── CINEMA TEXT (Word-by-word reveal on scroll) ────
+  let cinemaItems = [];
+
   function setupCinemaText() {
-    $$('[data-reveal="words"]').forEach(el => {
+    cinemaItems = $$('[data-reveal="words"]').map(el => {
       const text = el.textContent.trim();
       el.innerHTML = '';
-      text.split(/\s+/).forEach(word => {
+      const words = text.split(/\s+/).map(word => {
         const span = document.createElement('span');
         span.className = 'word';
         span.textContent = word;
         el.appendChild(span);
+        return span;
       });
+      return {
+        element: el,
+        words: words,
+        top: 0,
+        height: 0
+      };
     });
   }
+
+  function cacheCinemaOffsets() {
+    const scrollY = window.scrollY;
+    cinemaItems.forEach(item => {
+      const rect = item.element.getBoundingClientRect();
+      item.top = rect.top + scrollY;
+      item.height = rect.height;
+    });
+    scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+  }
+
   setupCinemaText();
+  cacheCinemaOffsets();
+
+  // Re-cache on window resize and load
+  window.addEventListener('resize', cacheCinemaOffsets);
+  window.addEventListener('load', cacheCinemaOffsets);
 
   function updateCinemaText() {
-    $$('[data-reveal="words"]').forEach(el => {
-      const words = $$('.word', el);
-      const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // Progress: 0 when element enters bottom, 1 when it's at top
-      const progress = 1 - (rect.top / (vh * 0.7));
+    const vh = window.innerHeight;
+    const scrollY = window.scrollY;
+
+    cinemaItems.forEach(item => {
+      const progress = 1 - ((item.top - scrollY) / (vh * 0.7));
       const clampedProgress = Math.max(0, Math.min(1, progress));
 
-      words.forEach((word, i) => {
-        const wordProgress = i / words.length;
+      item.words.forEach((word, i) => {
+        const wordProgress = i / item.words.length;
         word.classList.toggle('lit', clampedProgress > wordProgress);
       });
     });
@@ -183,7 +206,7 @@
   // ── PARTICLE CANVAS ────────────────────────────────
   function initParticles(canvasId, opts = {}) {
     const canvas = $(canvasId);
-    if (!canvas) return;
+    if (!canvas) return null;
     const ctx = canvas.getContext('2d');
 
     const config = {
@@ -198,8 +221,11 @@
     let width, height;
     let particles = [];
     let canvasMouseX = -1000, canvasMouseY = -1000;
+    let animationFrameId = null;
+    let isVisible = false;
 
     function resize() {
+      if (!canvas.parentElement) return;
       const rect = canvas.parentElement.getBoundingClientRect();
       width = canvas.width = rect.width;
       height = canvas.height = rect.height;
@@ -229,6 +255,8 @@
     }
 
     function draw() {
+      if (!isVisible) return;
+
       ctx.clearRect(0, 0, width, height);
 
       // Update positions
@@ -286,7 +314,6 @@
         const [r, g, b] = proximity > 0.3 ? config.accentColor : config.baseColor;
 
         // Apply scroll-warp physics
-        // As scroll velocity increases, stretch particles vertically
         const velocityEffect = globalScrollVelocity * 1.5;
         
         ctx.beginPath();
@@ -295,7 +322,6 @@
           ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
           ctx.lineWidth = p.radius + proximity * 1.5;
           ctx.moveTo(p.x, p.y);
-          // Stretch vertically based on velocity
           ctx.lineTo(p.x, p.y - velocityEffect * (p.radius * 8));
           ctx.stroke();
         } else {
@@ -314,27 +340,58 @@
         }
       });
 
-      requestAnimationFrame(draw);
+      animationFrameId = requestAnimationFrame(draw);
     }
 
     // Mouse tracking relative to canvas
-    canvas.parentElement.addEventListener('mousemove', (e) => {
+    const mouseMoveHandler = (e) => {
       const rect = canvas.getBoundingClientRect();
       canvasMouseX = e.clientX - rect.left;
       canvasMouseY = e.clientY - rect.top;
-    });
+    };
 
-    canvas.parentElement.addEventListener('mouseleave', () => {
+    const mouseLeaveHandler = () => {
       canvasMouseX = -1000;
       canvasMouseY = -1000;
-    });
+    };
 
-    window.addEventListener('resize', () => {
+    const resizeHandler = () => {
       resize();
-    });
+    };
+
+    canvas.parentElement.addEventListener('mousemove', mouseMoveHandler);
+    canvas.parentElement.addEventListener('mouseleave', mouseLeaveHandler);
+    window.addEventListener('resize', resizeHandler);
+
+    // Setup intersection observer for off-screen culling
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const previouslyVisible = isVisible;
+        isVisible = entry.isIntersecting;
+        if (isVisible && !previouslyVisible) {
+          cancelAnimationFrame(animationFrameId);
+          draw();
+        } else if (!isVisible && previouslyVisible) {
+          cancelAnimationFrame(animationFrameId);
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer.observe(canvas.parentElement);
 
     init();
-    draw();
+
+    return {
+      destroy: () => {
+        observer.disconnect();
+        cancelAnimationFrame(animationFrameId);
+        if (canvas.parentElement) {
+          canvas.parentElement.removeEventListener('mousemove', mouseMoveHandler);
+          canvas.parentElement.removeEventListener('mouseleave', mouseLeaveHandler);
+        }
+        window.removeEventListener('resize', resizeHandler);
+      }
+    };
   }
 
   // Init hero canvas
@@ -682,9 +739,18 @@
     modal.classList.add('open');
     document.body.classList.add('modal-open');
 
+    // Clean up previous canvas loop if any
+    if (modalCanvasCleanup) {
+      modalCanvasCleanup.destroy();
+      modalCanvasCleanup = null;
+    }
+
     // Init modal canvas with project colors
     setTimeout(() => {
-      initParticles('#pm-canvas', {
+      if (modalCanvasCleanup) {
+        modalCanvasCleanup.destroy();
+      }
+      modalCanvasCleanup = initParticles('#pm-canvas', {
         count: 60,
         maxDist: 140,
         speed: 0.25,
@@ -704,6 +770,10 @@
   function closeModal() {
     modal.classList.remove('open');
     document.body.classList.remove('modal-open');
+    if (modalCanvasCleanup) {
+      modalCanvasCleanup.destroy();
+      modalCanvasCleanup = null;
+    }
   }
 
   // Event listeners

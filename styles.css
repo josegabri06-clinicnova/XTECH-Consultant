@@ -86,8 +86,11 @@ button { cursor: none; }
   background: #fff;
   border-radius: 50%;
   position: absolute;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s ease, width 0.3s var(--ease), height 0.3s var(--ease);
+  top: 0;
+  left: 0;
+  transform: translate3d(0, 0, 0) translate(-50%, -50%);
+  transition: width 0.3s var(--ease), height 0.3s var(--ease);
+  will-change: transform;
 }
 
 .cursor-ring {
@@ -96,8 +99,11 @@ button { cursor: none; }
   border: 1.5px solid rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   position: absolute;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  transform: translate3d(0, 0, 0) translate(-50%, -50%);
   transition: width 0.4s var(--ease), height 0.4s var(--ease), border-color 0.3s ease;
+  will-change: transform;
 }
 
 body.cursor-hover .cursor-dot {
