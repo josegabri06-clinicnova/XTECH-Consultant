@@ -313,23 +313,10 @@
         const alpha = p.baseAlpha + proximity * 0.5;
         const [r, g, b] = proximity > 0.3 ? config.accentColor : config.baseColor;
 
-        // Apply scroll-warp physics
-        const velocityEffect = globalScrollVelocity * 1.5;
-        
         ctx.beginPath();
-        if (Math.abs(velocityEffect) > 0.25) {
-          // Draw warp streak lines
-          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-          ctx.lineWidth = p.radius + proximity * 1.5;
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p.x, p.y - velocityEffect * (p.radius * 8));
-          ctx.stroke();
-        } else {
-          // Draw standard circular node
-          ctx.arc(p.x, p.y, p.radius + proximity * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-          ctx.fill();
-        }
+        ctx.arc(p.x, p.y, p.radius + proximity * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        ctx.fill();
 
         // Glow for close particles
         if (proximity > 0.3) {
