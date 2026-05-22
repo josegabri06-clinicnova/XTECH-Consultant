@@ -1370,7 +1370,140 @@
     submitBtn.innerHTML = originalText;
   }
 
+  // ── SECTOR DEMO INTERACTIVE WIDGET ──────────────────
+  const sectorDemoData = {
+    clinica: {
+      steps: [
+        { title: 'Paciente reserva online',            desc: 'Elige especialista, día y hora desde la web de la clínica.' },
+        { title: 'WhatsApp automático 48h antes',      desc: 'Confirmación con botones: confirmar, cancelar o reagendar.' },
+        { title: 'Cancela → lista de espera activa',   desc: 'El hueco se reasigna al siguiente paciente automáticamente.' },
+        { title: 'Cobro automático con Stripe',        desc: 'Facturación post-consulta sin pasar por caja.' }
+      ],
+      result: { metric: '-61%', label: 'ausencias · 4 horas/día ahorradas en llamadas' }
+    },
+    contabilidad: {
+      steps: [
+        { title: 'Factura detectada por email o WhatsApp', desc: 'El sistema la identifica y la procesa en segundos.' },
+        { title: 'GPT-4 extrae todos los campos',          desc: 'NIF, base imponible, IVA, retención IRPF. Sin errores humanos.' },
+        { title: 'Clasificación y detección de duplicados', desc: 'Categoría contable asignada automáticamente.' },
+        { title: 'Exportación directa a Holded / A3',      desc: 'Listo para tu gestoría con un solo clic.' }
+      ],
+      result: { metric: '4.2s', label: 'por factura procesada · antes eran 20 minutos' }
+    },
+    turismo: {
+      steps: [
+        { title: 'Reserva detectada en cualquier OTA',    desc: 'Booking, Airbnb, web propia. Sincronizado en < 30 segundos.' },
+        { title: 'WhatsApp pre-llegada automático',       desc: 'Código de acceso, normas e instrucciones al huésped.' },
+        { title: 'Check-in digital del huésped',          desc: 'Documentación online. Parte de viajeros generado automáticamente.' },
+        { title: 'Coordinación de limpieza al checkout',  desc: 'El equipo recibe alerta con datos del próximo huésped.' }
+      ],
+      result: { metric: '30min', label: 'de gestión semanal · antes eran 30 horas' }
+    },
+    empresa: {
+      steps: [
+        { title: 'Analizamos tus procesos manuales',      desc: 'Identificamos qué tareas consumen más tiempo y dinero.' },
+        { title: 'Diseñamos el flujo automatizado',        desc: 'Cada automatización es 100% personalizada para tu negocio.' },
+        { title: 'Integramos tus herramientas actuales',   desc: 'CRM, ERP, email, WhatsApp. Sin cambiar lo que ya usas.' },
+        { title: 'Sistema activo en 3 semanas',            desc: 'Con dashboard de control y soporte técnico continuo.' }
+      ],
+      result: { metric: '3 sem', label: 'hasta ver los primeros resultados medibles' }
+    }
+  };
+
+  function initSectorDemo() {
+    const sdFlow   = document.getElementById('sd-flow');
+    const sdResult = document.getElementById('sd-result');
+    const tabs     = document.querySelectorAll('.sd-tab');
+    if (!sdFlow || !tabs.length) return;
+
+    const sectorOrder = ['clinica', 'contabilidad', 'turismo', 'empresa'];
+    let currentSector  = 'clinica';
+    let autoRotateTimer = null;
+
+    function renderSector(sectorKey, fade = true) {
+      const data = sectorDemoData[sectorKey];
+      if (!data) return;
+      currentSector = sectorKey;
+
+      // Update tabs
+      tabs.forEach(tab => {
+        const isActive = tab.dataset.sector === sectorKey;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        // Restart the progress bar animation by forcing a reflow
+        if (isActive) {
+          tab.classList.remove('active');
+          void tab.offsetWidth; // force reflow
+          tab.classList.add('active');
+        }
+      });
+
+      // Fade out
+      if (fade) {
+        sdFlow.style.opacity = '0';
+        sdFlow.style.transform = 'translateY(5px)';
+        sdResult.classList.remove('visible');
+      }
+
+      const delay = fade ? 220 : 0;
+
+      setTimeout(() => {
+        // Render steps
+        sdFlow.innerHTML = data.steps.map((step, i) => `
+          <div class="sd-step" style="animation-delay: ${i * 0.13}s">
+            <div class="sd-step-num">${String(i + 1).padStart(2, '0')}</div>
+            <div class="sd-step-content">
+              <div class="sd-step-title">${step.title}</div>
+              <div class="sd-step-desc">${step.desc}</div>
+            </div>
+          </div>
+        `).join('');
+
+        // Render result
+        sdResult.innerHTML = `
+          <span class="sd-result-icon">✓</span>
+          <span class="sd-result-metric">${data.result.metric}</span>
+          <span class="sd-result-label">${data.result.label}</span>
+        `;
+
+        // Fade in
+        sdFlow.style.opacity = '1';
+        sdFlow.style.transform = 'translateY(0)';
+
+        // Show result after steps animate
+        const resultDelay = data.steps.length * 130 + 200;
+        setTimeout(() => sdResult.classList.add('visible'), resultDelay);
+
+      }, delay);
+    }
+
+    function startAutoRotate() {
+      clearInterval(autoRotateTimer);
+      autoRotateTimer = setInterval(() => {
+        const idx  = sectorOrder.indexOf(currentSector);
+        const next = sectorOrder[(idx + 1) % sectorOrder.length];
+        renderSector(next, true);
+      }, 5000);
+    }
+
+    // Tab click — manual override resets timer
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const sector = tab.dataset.sector;
+        if (sector === currentSector) return;
+        renderSector(sector, true);
+        startAutoRotate(); // reset countdown
+      });
+    });
+
+    // Initial render + start rotation
+    renderSector('clinica', false);
+    startAutoRotate();
+  }
+
   // Inicializar todo
+  initSectorDemo();
   initBookingSystem();
+
 
 })();
