@@ -388,7 +388,7 @@
     speed: 0.12,
     mouseRadius: 200,
     baseColor: [148, 163, 184],
-    accentColor: [241, 245, 249],
+    accentColor: [37, 99, 235],
   });
 
   // Init CTA canvas (Optimized count for 60fps on Retina displays)
@@ -398,7 +398,7 @@
     speed: 0.1,
     mouseRadius: 160,
     baseColor: [148, 163, 184],
-    accentColor: [241, 245, 249],
+    accentColor: [37, 99, 235],
   });
 
   // ── SMOOTH ANCHOR SCROLL ───────────────────────────
@@ -548,7 +548,7 @@
       subtitle: 'Gestión integral de clínicas con recordatorios inteligentes por WhatsApp, citas online y cobros automatizados con Stripe.',
       bigStat: '-61%',
       bigLabel: 'ausencias de pacientes',
-      colors: { base: [226, 232, 240], accent: [148, 163, 184] },
+      colors: { base: [16, 185, 129], accent: [6, 95, 70] },
       problem: {
         title: 'Las clínicas pierden 4 horas al día llamando a pacientes que no van a venir',
         text: 'El personal de recepción dedica la mitad de su jornada a llamar uno a uno para confirmar citas. Los pacientes no contestan, olvidan las citas, y las clínicas pierden ingresos por huecos vacíos. El resultado: un equipo frustrado, huecos sin cubrir y una facturación muy por debajo de su capacidad real.'
@@ -579,7 +579,7 @@
       subtitle: 'OCR con inteligencia artificial que lee facturas, extrae datos contables, calcula impuestos y exporta a tu gestoría en segundos.',
       bigStat: '4.2s',
       bigLabel: 'por factura procesada',
-      colors: { base: [148, 163, 184], accent: [71, 85, 105] },
+      colors: { base: [59, 130, 246], accent: [29, 78, 216] },
       problem: {
         title: '20 minutos por factura. Multiplicado por 200 facturas al mes.',
         text: 'Los despachos contables y departamentos financieros procesan cientos de facturas manualmente cada mes. Abrir el PDF, leer el emisor, copiar el NIF, el importe, la base imponible, el tipo de IVA, la retención de IRPF... todo a mano. Un error de transcripción puede costar multas de Hacienda. Y el equipo vive en un estado permanente de estrés.'
@@ -610,7 +610,7 @@
       subtitle: 'Automatización total de gestión de apartamentos turísticos. Reservas, check-in digital, mensajes automáticos y coordinación de limpieza.',
       bigStat: '30min',
       bigLabel: 'de gestión por semana',
-      colors: { base: [241, 245, 249], accent: [202, 138, 4] },
+      colors: { base: [245, 158, 11], accent: [180, 83, 9] },
       problem: {
         title: 'Gestionar 10 apartamentos te roba 30 horas a la semana',
         text: 'Cada reserva genera una cascada de tareas: responder al huésped, enviar instrucciones de check-in, coordinar limpieza, sincronizar calendarios entre Booking, Airbnb y la web propia, gestionar depósitos de seguridad, enviar códigos de acceso... Un propietario con 10 apartamentos pasa más tiempo gestionando que viviendo.'
@@ -641,7 +641,7 @@
       subtitle: 'Channel Manager + CRM + comunicación automatizada por WhatsApp para hoteles. Todas las OTAs sincronizadas en tiempo real.',
       bigStat: '0',
       bigLabel: 'overbookings',
-      colors: { base: [59, 130, 246], accent: [148, 163, 184] },
+      colors: { base: [99, 102, 241], accent: [67, 56, 202] },
       problem: {
         title: 'Un overbooking puede destruir 50 reseñas positivas en una noche',
         text: 'Los hoteles que gestionan disponibilidad en múltiples canales (Booking, Expedia, HotelBeds, web propia) viven con el miedo constante al overbooking. Cada minuto que un canal tarda en actualizar es un riesgo real. Y cuando ocurre, el daño reputacional es brutal: reseñas negativas, compensaciones económicas y pérdida de confianza.'
