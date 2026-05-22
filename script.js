@@ -365,7 +365,11 @@
       const target = $(href);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (lenis) {
+          lenis.scrollTo(target, { offset: -80 });
+        } else {
+          target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
       }
     });
   });
@@ -724,7 +728,11 @@
       setTimeout(() => {
         const contactSection = $('#contacto');
         if (contactSection) {
-          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (lenis) {
+            lenis.scrollTo(contactSection, { offset: -80 });
+          } else {
+            contactSection.scrollIntoView({ behavior: 'auto', block: 'start' });
+          }
         }
       }, 400);
     });
