@@ -9,7 +9,7 @@
 
   // ── INTEGRATIONS CONFIG ────────────────────────────
   // Pega aquí tu webhook de n8n o endpoint de Supabase para recibir la cita
-  const N8N_BOOKING_WEBHOOK_URL = "";
+  const N8N_BOOKING_WEBHOOK_URL = "https://clinicnova.shop/webhook/xtech-booking";
 
   // ── UTILS ──────────────────────────────────────────
   const $ = (sel, ctx = document) => ctx.querySelector(sel);

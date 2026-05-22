@@ -1,0 +1,192 @@
+{
+  "name": "XTech Booking & Lead Qualification Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "xtech-booking",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "e81d77c1-ea50-4824-9b2f-76497f6c38a3",
+      "name": "Webhook: Recibir Reserva",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableName": "xtech_leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "company": "={{ $json.company }}",
+            "revenue": "={{ $json.revenue }}",
+            "bottleneck": "={{ $json.bottleneck }}",
+            "booking_date": "={{ $json.date }}",
+            "booking_slot": "={{ $json.slot }}",
+            "submitted_at": "={{ $json.submittedAt }}",
+            "status": "scheduled"
+          }
+        },
+        "options": {}
+      },
+      "id": "c1388b1b-ee62-42c2-aa7a-8f92bd56c66d",
+      "name": "Supabase: Guardar Lead",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        320,
+        200
+      ],
+      "credentials": {
+        "supabaseApiKey": {
+          "id": "supabase-credential-id",
+          "name": "Supabase Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (const item of items) {\n  const datePart = item.json.date.split('T')[0];\n  const [startStr, endStr] = item.json.slot.split(' - ');\n  item.json.startDateTime = `${datePart}T${startStr}:00`;\n  item.json.endDateTime = `${datePart}T${endStr}:00`;\n}\nreturn items;"
+      },
+      "id": "f51b9e2c-87d2-45e3-8f0a-bf1c6b12a87b",
+      "name": "Code: Formatear Fechas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "calendarId": "primary",
+        "start": "={{ $json.startDateTime }}",
+        "end": "={{ $json.endDateTime }}",
+        "additionalFields": {
+          "summary": "=Diagnóstico Tecnológico XTech: {{ $json.name }} ({{ $json.company }})",
+          "description": "=Sesión estratégica de diagnóstico tecnológico personalizado de 1 hora.\n\n🧑‍💻 CLIENTE:\n- Nombre: {{ $json.name }}\n- Email: {{ $json.email }}\n- Empresa: {{ $json.company }}\n\n📊 CALIFICACIÓN B2B:\n- Rango de Facturación: {{ $json.revenue }}\n- Cuello de botella identificado: {{ $json.bottleneck }}\n\n📞 REUNIÓN:\nLa reunión incluye una videollamada de Google Meet que se ha generado de forma automática. Por favor, asegúrate de tener una buena conexión y preparar las dudas específicas sobre tus automatizaciones e infraestructura de datos.",
+          "timeZone": "Europe/Madrid",
+          "attendees": [
+            "={{ $json.email }}",
+            "xtechconsultantit@gmail.com"
+          ]
+        }
+      },
+      "id": "a9a3b8cd-e3f3-455b-9d22-1d54238e55e3",
+      "name": "Google Calendar: Crear Evento",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        540,
+        400
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "google-calendar-credential-id",
+          "name": "Google Calendar Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $node[\"Webhook: Recibir Reserva\"].json[\"email\"] }}",
+        "subject": "=Confirmada: Tu Sesión de Diagnóstico Tecnológico con XTech Consultant",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <style>\n    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; line-height: 1.6; color: #0F172A; background-color: #F8FAFC; margin: 0; padding: 0; }\n    .wrapper { max-width: 600px; margin: 40px auto; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }\n    .header { background: #0F172A; padding: 32px; text-align: center; color: #FFFFFF; }\n    .header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }\n    .header p { margin: 8px 0 0 0; color: #94A3B8; font-size: 14px; }\n    .content { padding: 40px 32px; }\n    .welcome { font-size: 18px; font-weight: 600; margin-bottom: 16px; }\n    .summary-card { background: #F1F5F9; border-radius: 8px; padding: 24px; margin: 24px 0; border-left: 4px solid #2563EB; }\n    .summary-item { margin-bottom: 12px; font-size: 15px; }\n    .summary-item strong { color: #475569; }\n    .meet-btn { display: inline-block; background: #2563EB; color: #FFFFFF !important; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 16px; margin: 20px 0; text-align: center; }\n    .footer { background: #F8FAFC; padding: 24px; text-align: center; font-size: 12px; color: #64748B; border-top: 1px solid #E2E8F0; }\n  </style>\n</head>\n<body>\n  <div class=\"wrapper\">\n    <div class=\"header\">\n      <h1>XTech Consultant</h1>\n      <p>Arquitectura de Automatización y Sistemas de IA</p>\n    </div>\n    <div class=\"content\">\n      <div class=\"welcome\">Hola {{ $node[\"Webhook: Recibir Reserva\"].json[\"name\"] }},</div>\n      <p>Hemos confirmado con éxito tu sesión de diagnóstico de tecnología de 1 hora. Analizaremos tu infraestructura actual, cuellos de botella operativos y diseñaremos una propuesta técnica optimizada para tu negocio.</p>\n      \n      <div class=\"summary-card\">\n        <div class=\"summary-item\"><strong>Fecha y Hora:</strong> {{ $node[\"Webhook: Recibir Reserva\"].json[\"dateFormatted\"] }} a las {{ $node[\"Webhook: Recibir Reserva\"].json[\"slot\"] }} (Hora de Madrid)</div>\n        <div class=\"summary-item\"><strong>Empresa:</strong> {{ $node[\"Webhook: Recibir Reserva\"].json[\"company\"] }}</div>\n        <div class=\"summary-item\"><strong>Cuello de Botella:</strong> {{ $node[\"Webhook: Recibir Reserva\"].json[\"bottleneck\"] }}</div>\n      </div>\n      \n      <p>Hemos generado un enlace de <strong>Google Meet</strong> exclusivo para nuestra llamada. Podrás acceder directamente a través del siguiente botón o desde la invitación que acabamos de enviar a tu calendario de Google:</p>\n      \n      <div style=\"text-align: center;\">\n        <a href=\"{{ $json.htmlLink }}\" class=\"meet-btn\">Acceder a la Reunión (Google Meet)</a>\n      </div>\n      \n      <p>Si necesitas modificar o reagendar la sesión, te pedimos que nos avises con al menos 24 horas de antelación respondiendo directamente a este correo.</p>\n      <p>Nos vemos muy pronto.</p>\n      <p>El Equipo de <strong>XTech Consultant</strong></p>\n    </div>\n    <div class=\"footer\">\n      &copy; 2026 XTech Consultant IT. Todos los derechos reservados.<br>\n      xtechconsultantit@gmail.com | Madrid, España\n    </div>\n  </div>\n</body>\n</html>"
+      },
+      "id": "e0e29b1b-ff62-42c2-aa7a-8f92bd56c66d",
+      "name": "Gmail: Confirmación al Cliente",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        780,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2Api": {
+          "id": "gmail-credential-id",
+          "name": "xtechconsultantit@gmail.com Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "xtechconsultantit@gmail.com",
+        "subject": "=🔥 Lead Calificado Reservado: {{ $node[\"Webhook: Recibir Reserva\"].json[\"name\"] }} ({{ $node[\"Webhook: Recibir Reserva\"].json[\"company\"] }}) - {{ $node[\"Webhook: Recibir Reserva\"].json[\"revenue\"] }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; line-height: 1.6; color: #1E293B; background: #F8FAFC; padding: 20px; }\n    .container { max-width: 600px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }\n    .badge { display: inline-block; background: #EEF2F6; color: #1E293B; padding: 4px 10px; border-radius: 4px; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 16px; }\n    .badge.hot { background: #FEF2F2; color: #EF4444; border: 1px solid #FEE2E2; }\n    h2 { font-size: 20px; font-weight: 700; margin: 0 0 16px 0; color: #0F172A; }\n    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }\n    .metric-box { background: #F8FAFC; border: 1px solid #F1F5F9; border-radius: 6px; padding: 16px; }\n    .metric-label { font-size: 12px; color: #64748B; text-transform: uppercase; font-weight: 600; }\n    .metric-value { font-size: 16px; color: #0F172A; font-weight: 700; margin-top: 4px; }\n    .detail-section { margin-top: 24px; border-top: 1px solid #F1F5F9; padding-top: 20px; }\n    .btn-admin { display: inline-block; background: #0F172A; color: #FFFFFF !important; text-decoration: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-top: 16px; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"badge hot\">🔥 NUEVA REUNIÓN CALIFICADA</div>\n    <h2>{{ $node[\"Webhook: Recibir Reserva\"].json[\"name\"] }} ha reservado una sesión de diagnóstico</h2>\n    \n    <div class=\"metric-grid\">\n      <div class=\"metric-box\">\n        <div class=\"metric-label\">Facturación Anual</div>\n        <div class=\"metric-value\">{{ $node[\"Webhook: Recibir Reserva\"].json[\"revenue\"] }}</div>\n      </div>\n      <div class=\"metric-box\">\n        <div class=\"metric-label\">Fecha Reservada</div>\n        <div class=\"metric-value\">{{ $node[\"Webhook: Recibir Reserva\"].json[\"slot\"] }}</div>\n      </div>\n    </div>\n    \n    <div class=\"detail-section\">\n      <p><strong>Contacto:</strong> {{ $node[\"Webhook: Recibir Reserva\"].json[\"name\"] }} ({{ $node[\"Webhook: Recibir Reserva\"].json[\"email\"] }})</p>\n      <p><strong>Empresa:</strong> {{ $node[\"Webhook: Recibir Reserva\"].json[\"company\"] }}</p>\n      <p><strong>Cuello de botella técnico:</strong><br>\n      <span style=\"color: #475569;\">\"{{ $node[\"Webhook: Recibir Reserva\"].json[\"bottleneck\"] }}\"</span></p>\n    </div>\n    \n    <div style=\"margin-top: 24px;\">\n      <a href=\"{{ $json.htmlLink }}\" class=\"btn-admin\">Ver en Google Calendar</a>\n    </div>\n  </div>\n</body>\n</html>"
+      },
+      "id": "e0e29b1b-ff62-42c2-aa7a-8f92bd56c77e",
+      "name": "Gmail: Notificación a Fundadores",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [
+        780,
+        480
+      ],
+      "credentials": {
+        "gmailOAuth2Api": {
+          "id": "gmail-credential-id",
+          "name": "xtechconsultantit@gmail.com Connection"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook: Recibir Reserva": {
+      "main": [
+        [
+          {
+            "node": "Supabase: Guardar Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code: Formatear Fechas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Formatear Fechas": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar: Crear Evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar: Crear Evento": {
+      "main": [
+        [
+          {
+            "node": "Gmail: Confirmación al Cliente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail: Notificación a Fundadores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {}
+}
