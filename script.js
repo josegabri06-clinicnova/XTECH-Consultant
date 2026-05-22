@@ -1370,43 +1370,42 @@
     submitBtn.innerHTML = originalText;
   }
 
-  // ── SECTOR DEMO INTERACTIVE WIDGET ──────────────────
   const sectorDemoData = {
     clinica: {
       steps: [
-        { title: 'Paciente reserva online',            desc: 'Elige especialista, día y hora desde la web de la clínica.' },
-        { title: 'WhatsApp automático 48h antes',      desc: 'Confirmación con botones: confirmar, cancelar o reagendar.' },
-        { title: 'Cancela → lista de espera activa',   desc: 'El hueco se reasigna al siguiente paciente automáticamente.' },
-        { title: 'Cobro automático con Stripe',        desc: 'Facturación post-consulta sin pasar por caja.' }
+        { title: 'Software Clínico & Agenda a medida', desc: 'Fichas clínicas encriptadas y agenda de especialistas multidispositivo.' },
+        { title: 'Confirmación Activa por WhatsApp',    desc: 'Recordatorios integrados que permiten confirmar o reagendar en un clic.' },
+        { title: 'Lista de Espera Inteligente',        desc: 'La IA detecta cancelaciones y reasigna los huecos libres en 12 segundos.' },
+        { title: 'Conciliación y Cobros con Stripe',    desc: 'Facturación automática post-consulta sin pasar por recepción.' }
       ],
-      result: { metric: '-61%', label: 'ausencias · 4 horas/día ahorradas en llamadas' }
+      result: { metric: '-61%', label: 'ausencias · Agenda médica centralizada, ágil y 100% segura' }
     },
     contabilidad: {
       steps: [
-        { title: 'Factura detectada por email o WhatsApp', desc: 'El sistema la identifica y la procesa en segundos.' },
-        { title: 'GPT-4 extrae todos los campos',          desc: 'NIF, base imponible, IVA, retención IRPF. Sin errores humanos.' },
-        { title: 'Clasificación y detección de duplicados', desc: 'Categoría contable asignada automáticamente.' },
-        { title: 'Exportación directa a Holded / A3',      desc: 'Listo para tu gestoría con un solo clic.' }
+        { title: 'Conciliación Bancaria & Cobros',    desc: 'Entrada unificada de facturas recibidas por email, WhatsApp o ERP.' },
+        { title: 'Extracción Contable con IA',          desc: 'GPT-4 Vision procesa bases imponibles, IVA e IRPF sin errores humanos.' },
+        { title: 'Sincronización con Holded / A3',     desc: 'Exportación directa de asientos contables estructurados en tiempo real.' },
+        { title: 'Dashboard de Control Financiero',     desc: 'Previsión de caja, IVA acumulado y analítica financiera a un clic.' }
       ],
-      result: { metric: '4.2s', label: 'por factura procesada · antes eran 20 minutos' }
+      result: { metric: '4.2s', label: 'por factura · Detección inmediata de anomalías y cuadre fiscal 100%' }
     },
     turismo: {
       steps: [
-        { title: 'Reserva detectada en cualquier OTA',    desc: 'Booking, Airbnb, web propia. Sincronizado en < 30 segundos.' },
-        { title: 'WhatsApp pre-llegada automático',       desc: 'Código de acceso, normas e instrucciones al huésped.' },
-        { title: 'Check-in digital del huésped',          desc: 'Documentación online. Parte de viajeros generado automáticamente.' },
-        { title: 'Coordinación de limpieza al checkout',  desc: 'El equipo recibe alerta con datos del próximo huésped.' }
+        { title: 'Channel Manager Multiproveedor',      desc: 'Sincronización en tiempo real vía Beds24 de Booking, Airbnb y web propia.' },
+        { title: 'Conserjería Virtual & Accesos',       desc: 'Check-in móvil automatizado y entrega digital de llaves de acceso.' },
+        { title: 'Ficha Policial en Tiempo Real',       desc: 'Envío seguro y automatizado de datos de viajeros a las autoridades.' },
+        { title: 'Algoritmo de Precios Dinámicos',      desc: 'Optimización automatizada de tarifas según ocupación y mercado.' }
       ],
-      result: { metric: '30min', label: 'de gestión semanal · antes eran 30 horas' }
+      result: { metric: '0', label: 'overbookings · Ahorro de 30h/semana en gestión y +23% reservas directas' }
     },
     empresa: {
       steps: [
-        { title: 'Analizamos tus procesos manuales',      desc: 'Identificamos qué tareas consumen más tiempo y dinero.' },
-        { title: 'Diseñamos el flujo automatizado',        desc: 'Cada automatización es 100% personalizada para tu negocio.' },
-        { title: 'Integramos tus herramientas actuales',   desc: 'CRM, ERP, email, WhatsApp. Sin cambiar lo que ya usas.' },
-        { title: 'Sistema activo en 3 semanas',            desc: 'Con dashboard de control y soporte técnico continuo.' }
+        { title: 'Diagnóstico & Auditoría de Core',     desc: 'Mapeamos tus ineficiencias de datos, financieras u operativas.' },
+        { title: 'Diseño de Arquitectura y UX/UI',      desc: 'Creamos prototipos de software personalizados a tus flujos.' },
+        { title: 'Desarrollo de Software Propietario',   desc: 'Programamos tu SaaS, CRM, ERP o portal a medida en sprints quincenales.' },
+        { title: 'Despliegue Cloud & Soporte CTO',       desc: 'Lanzamos el sistema a producción y actuamos como tu equipo de ingeniería.' }
       ],
-      result: { metric: '3 sem', label: 'hasta ver los primeros resultados medibles' }
+      result: { metric: '100%', label: 'Personalizado · Construimos software propietario para cualquier reto empresarial' }
     }
   };
 
