@@ -726,6 +726,7 @@
     // Open modal
     modal.classList.add('open');
     document.body.classList.add('modal-open');
+    if (lenis) lenis.stop();
 
     // Clean up previous canvas loop if any
     if (modalCanvasCleanup) {
@@ -752,6 +753,7 @@
   function closeModal() {
     modal.classList.remove('open');
     document.body.classList.remove('modal-open');
+    if (lenis) lenis.start();
     if (modalCanvasCleanup) {
       modalCanvasCleanup.destroy();
       modalCanvasCleanup = null;
@@ -856,6 +858,7 @@
     legalModal.classList.add('open');
     legalModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    if (lenis) lenis.stop();
 
     // Switch to target tab
     switchLegalTab(tabName);
@@ -870,6 +873,7 @@
     legalModal.classList.remove('open');
     legalModal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+    if (lenis) lenis.start();
   }
 
   function switchLegalTab(tabName) {

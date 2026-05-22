@@ -2502,6 +2502,163 @@ body.modal-open {
 }
 
 /* ═══════════════════════════════════════════════════════
+   LUXURY AESTHETIC ENHANCEMENTS — Linear/Vercel Style
+   ═══════════════════════════════════════════════════════ */
+
+/* Elegant dotted mesh grid background */
+.grid-mesh {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 85%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.95;
+}
+
+/* Elegant micro progress and stat bar elements */
+.stat-bar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-full);
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.7));
+  border-radius: var(--radius-full);
+  transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: width;
+}
+
+/* Animate stats reveal in viewport */
+.visible .stat-bar-fill {
+  width: var(--w) !important;
+}
+
+/* Additional styling for pain row bars */
+.pain-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pain-bar .stat-bar-fill {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(255, 255, 255, 0.8));
+}
+
+/* Visual Node Connections */
+.visual-node-net {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 140px;
+}
+
+.visual-node-net .node {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.visual-node-net .node.active {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.visual-node-net .node.warning {
+  background: var(--rose);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  animation: nodePulse 2s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+}
+
+.visual-node-net .line {
+  flex-grow: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.visual-node-net .line.disconnected {
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0, rgba(255, 255, 255, 0.1) 2px, transparent 2px, transparent 4px);
+}
+
+/* Visual Scale Lane */
+.visual-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 140px;
+  margin-top: 12px;
+}
+
+.visual-scale .scale-lane {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.03);
+  position: relative;
+}
+
+.visual-scale .scale-lane::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-full);
+  transition: width 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.visible .visual-scale .scale-lane::before {
+  width: var(--w) !important;
+}
+
+.scale-lane.competitor::before {
+  background: var(--text-dim);
+}
+
+.scale-lane.ours::before {
+  background: linear-gradient(90deg, var(--cyan), var(--text));
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Card glassmorphic hover enhancements */
+.sol-card, .project, .testimonial {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.sol-card:hover, .project:hover, .testimonial:hover {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Glassmorphic Navigation bar enhancements */
+#navbar.scrolled {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════
    ADDITIONAL RESPONSIVE STYLES
    ═══════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
