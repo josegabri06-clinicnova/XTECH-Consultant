@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
   <!-- Custom cursor -->
@@ -33,9 +34,21 @@
   <!-- ═══════════════════════════════════════════ -->
   <nav id="navbar" role="navigation" aria-label="Navegación principal">
     <div class="nav-inner">
-      <a href="#" class="nav-logo" id="nav-logo">
-        <span class="logo-icon">X</span>
-        <span class="logo-text">Tech</span>
+      <a href="#" class="nav-logo" id="nav-logo" aria-label="XTech Consultant Inicio">
+        <svg class="logo-svg" viewBox="0 0 100 100" width="28" height="28" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" />
+              <stop offset="50%" stop-color="#22d3ee" />
+              <stop offset="100%" stop-color="#34d399" />
+            </linearGradient>
+          </defs>
+          <path d="M 20,20 L 40,50 L 20,80" stroke="url(#logoGrad)" stroke-width="12" />
+          <path d="M 80,20 L 60,50 L 80,80" stroke="url(#logoGrad)" stroke-width="12" />
+          <path d="M 40,50 L 50,65 M 60,50 L 50,35" stroke="url(#logoGrad)" stroke-width="12" />
+          <path d="M 15,15 L 35,15 L 45,30 L 55,15 L 75,15 L 53,47 L 75,75 L 55,75 L 45,60 L 35,75 L 15,75 L 37,43 Z" stroke="url(#logoGrad)" stroke-width="6" opacity="0.85" />
+        </svg>
+        <span class="logo-text">X<span class="text-gradient">Tech</span></span>
       </a>
       <ul class="nav-links" id="nav-links">
         <li><a href="#servicios">Servicios</a></li>

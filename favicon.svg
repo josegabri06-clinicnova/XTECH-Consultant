@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="favGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <!-- Background circle/rounded rect for high visibility inside the browser bar -->
+  <rect width="90" height="90" x="5" y="5" rx="20" fill="#03060e" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  
+  <!-- Sleek bold geometric X icon -->
+  <path d="M 22,22 L 40,50 L 22,78 M 78,22 L 60,50 L 78,78" 
+        fill="none" 
+        stroke="url(#favGrad)" 
+        stroke-width="10" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+        
+  <path d="M 20,20 L 40,20 L 50,35 L 60,20 L 80,20 L 58,52 L 80,80 L 60,80 L 50,65 L 40,80 L 20,80 L 42,48 Z" 
+        fill="none" 
+        stroke="url(#favGrad)" 
+        stroke-width="6" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+</svg>

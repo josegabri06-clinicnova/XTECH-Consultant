@@ -170,17 +170,21 @@ body.cursor-hover .cursor-ring {
   letter-spacing: -0.03em;
 }
 
-.logo-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: var(--gradient);
-  color: var(--bg);
-  font-weight: 900;
-  font-size: 15px;
-  border-radius: 7px;
+.logo-svg {
+  flex-shrink: 0;
+  transition: transform 0.4s var(--ease), filter 0.4s var(--ease);
+}
+
+.nav-logo:hover .logo-svg {
+  transform: scale(1.1) rotate(5deg);
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6));
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.04em;
+  color: var(--text);
 }
 
 .nav-links {
