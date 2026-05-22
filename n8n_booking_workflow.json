@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "operation": "upsert",
+        "operation": "create",
         "tableName": "xtech_leads",
         "columns": {
           "mappingMode": "defineBelow",

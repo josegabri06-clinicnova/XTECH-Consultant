@@ -8,8 +8,12 @@
   'use strict';
 
   // ── INTEGRATIONS CONFIG ────────────────────────────
-  // Pega aquí tu webhook de n8n o endpoint de Supabase para recibir la cita
-  const N8N_BOOKING_WEBHOOK_URL = "https://clinicnova.shop/webhook-test/xtech-booking";
+  // Webhook de n8n para recibir reservas
+  const N8N_BOOKING_WEBHOOK_URL = "https://clinicnova.shop/webhook/xtech-booking";
+
+  // Supabase — solo lectura (anon key segura en frontend)
+  const SUPABASE_URL = "https://sjplrbbfmjvdnwrqmmsw.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcGxyYmJmbWp2ZG53cnFtbXN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTgyOTgsImV4cCI6MjA5NTAzNDI5OH0.DQnWIta54NQj0pgQFixRxdTJ6WlEDKSwCAZp5pQR-So";
 
   // ── UTILS ──────────────────────────────────────────
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -464,7 +468,7 @@
     lenis.on('scroll', (e) => {
       // Capture velocity (pixels/ms)
       globalScrollVelocity = e.velocity;
-      
+
       // Execute unified page scroll elements
       handleNavbar();
       updateProgress();
@@ -474,14 +478,14 @@
     // Integrated RequestAnimationFrame loop for Lenis ticks & inertia deceleration
     function raf(time) {
       lenis.raf(time);
-      
+
       // Decelerate the velocity smoothly back to 0 when scrolling stops
       if (Math.abs(globalScrollVelocity) > 0.02) {
         globalScrollVelocity = lerp(globalScrollVelocity, 0, 0.08);
       } else {
         globalScrollVelocity = 0;
       }
-      
+
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
@@ -993,7 +997,7 @@
 
   // ── INTERACTIVE SERVICE ACCORDIONS ──────────────────
   const serviceRows = $$('.service-row');
-  
+
   serviceRows.forEach(row => {
     const header = row.querySelector('.service-row-main');
     const detail = row.querySelector('.service-detail');
@@ -1056,9 +1060,47 @@
     '12:00 - 13:00',
     '15:00 - 16:00',
     '16:00 - 17:00',
-    '17:00 - 18:00',
     '17:00 - 18:00'
   ];
+
+  // ── SUPABASE: Consulta de slots ocupados ────────────
+  // Devuelve un array con los slots ya reservados para una fecha dada
+  // Ej: ['09:00 - 10:00', '15:00 - 16:00']
+  async function fetchBookedSlots(date) {
+    try {
+      // Construir rango de inicio y fin del día en UTC (Supabase guarda ISO strings)
+      const year  = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day   = String(date.getDate()).padStart(2, '0');
+      const dayStart = `${year}-${month}-${day}T00:00:00`;
+      const dayEnd   = `${year}-${month}-${day}T23:59:59`;
+
+      const url = `${SUPABASE_URL}/rest/v1/xtech_leads` +
+        `?select=booking_slot` +
+        `&booking_date=gte.${encodeURIComponent(dayStart)}` +
+        `&booking_date=lte.${encodeURIComponent(dayEnd)}`;
+
+      const res = await fetch(url, {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        console.warn('[XTech Booking] No se pudo consultar slots ocupados:', res.status);
+        return []; // Fallback: mostrar todos libres
+      }
+
+      const rows = await res.json();
+      // rows = [{ booking_slot: '09:00 - 10:00' }, ...]
+      return rows.map(r => r.booking_slot).filter(Boolean);
+    } catch (err) {
+      console.warn('[XTech Booking] Error consultando Supabase:', err);
+      return []; // Fallback seguro: no bloquear nada
+    }
+  }
 
   // Nombres de meses en español
   const monthNames = [
@@ -1071,7 +1113,7 @@
   function initBookingSystem() {
     if (!calendarDaysGrid) return;
     renderCalendar();
-    
+
     // Acciones de Pasos
     btnToStep2.addEventListener('click', () => changeStep(2));
     btnBackToStep1.addEventListener('click', () => changeStep(1));
@@ -1096,7 +1138,7 @@
   function renderCalendar() {
     const today = new Date();
     calendarDaysGrid.innerHTML = '';
-    
+
     // Mostrar mes actual / siguiente
     calendarMonthYear.textContent = `${monthNames[today.getMonth()]} / ${monthNames[(today.getMonth() + 1) % 12]} ${today.getFullYear()}`;
 
@@ -1108,7 +1150,7 @@
 
     // Generar la rejilla de días
     const daysToRender = [];
-    
+
     while (dayCounter < 12) {
       const dayOfWeek = checkDate.getDay();
       // Bloquear fines de semana (0 = Domingo, 6 = Sábado)
@@ -1124,7 +1166,7 @@
       const dayDiv = document.createElement('button');
       dayDiv.type = "button";
       dayDiv.className = 'calendar-day';
-      
+
       const dayNum = date.getDate();
       dayDiv.textContent = dayNum;
       dayDiv.title = `${dayNames[date.getDay()]} ${dayNum} de ${monthNames[date.getMonth()]}`;
@@ -1138,10 +1180,10 @@
         // Deseleccionar anteriores
         $$('.calendar-day', calendarDaysGrid).forEach(el => el.classList.remove('selected'));
         dayDiv.classList.add('selected');
-        
+
         selectedDate = date;
         selectedSlot = null; // reset slot al cambiar día
-        
+
         // Deshabilitar botón continuar
         btnToStep2.classList.add('disabled');
         btnToStep2.setAttribute('disabled', 'true');
@@ -1156,42 +1198,56 @@
 
   function isSameDay(d1, d2) {
     return d1.getFullYear() === d2.getFullYear() &&
-           d1.getMonth() === d2.getMonth() &&
-           d1.getDate() === d2.getDate();
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
   }
 
-  function showSlotsForDate(date) {
+  async function showSlotsForDate(date) {
     const formattedDate = `${dayNames[date.getDay()]} ${date.getDate()} de ${monthNames[date.getMonth()]}`;
     selectedDayLabel.textContent = formattedDate;
-    
+
+    // Mostrar skeleton loader mientras consulta Supabase
+    slotsGrid.innerHTML = workingHours.map(() =>
+      `<div class="slot-skeleton"></div>`
+    ).join('');
+    bookingSlotsContainer.style.display = 'block';
+
+    // Consultar slots ocupados en Supabase
+    const bookedSlots = await fetchBookedSlots(date);
+
+    // Renderizar slots con estado real
     slotsGrid.innerHTML = '';
-    
+
     workingHours.forEach(hour => {
+      const isBooked = bookedSlots.includes(hour);
       const slotBtn = document.createElement('button');
       slotBtn.type = "button";
-      slotBtn.className = 'slot-btn';
-      slotBtn.textContent = hour;
-      
-      if (selectedSlot === hour) {
+      slotBtn.className = isBooked ? 'slot-btn slot-booked' : 'slot-btn';
+      slotBtn.textContent = isBooked ? `${hour} — Ocupado` : hour;
+      slotBtn.disabled = isBooked;
+      slotBtn.setAttribute('aria-disabled', isBooked ? 'true' : 'false');
+      slotBtn.title = isBooked ? 'Esta franja ya está reservada' : `Reservar ${hour}`;
+
+      if (!isBooked && selectedSlot === hour) {
         slotBtn.classList.add('selected');
       }
 
-      slotBtn.addEventListener('click', () => {
-        $$('.slot-btn', slotsGrid).forEach(el => el.classList.remove('selected'));
-        slotBtn.classList.add('selected');
-        
-        selectedSlot = hour;
-        
-        // Habilitar botón de continuar
-        btnToStep2.classList.remove('disabled');
-        btnToStep2.removeAttribute('disabled');
-      });
+      if (!isBooked) {
+        slotBtn.addEventListener('click', () => {
+          $$('.slot-btn', slotsGrid).forEach(el => el.classList.remove('selected'));
+          slotBtn.classList.add('selected');
+
+          selectedSlot = hour;
+
+          // Habilitar botón de continuar
+          btnToStep2.classList.remove('disabled');
+          btnToStep2.removeAttribute('disabled');
+        });
+      }
 
       slotsGrid.appendChild(slotBtn);
     });
 
-    bookingSlotsContainer.style.display = 'block';
-    
     // Scroll suave hacia los slots si es móvil
     if (window.innerWidth < 768) {
       bookingSlotsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1201,10 +1257,10 @@
   function changeStep(stepNum) {
     // Esconder todos los pasos
     $$('.booking-step').forEach(el => el.classList.remove('active'));
-    
+
     // Activar paso
     $(`#step-${stepNum}`).classList.add('active');
-    
+
     // Actualizar barra de progreso
     if (stepNum === 1) {
       bookingProgressBar.style.width = '33%';
@@ -1213,17 +1269,17 @@
     } else if (stepNum === 3) {
       bookingProgressBar.style.width = '100%';
     }
-    
+
     // Scroll suave arriba de la tarjeta
     $('.booking-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   async function handleBookingSubmit(e) {
     e.preventDefault();
-    
+
     const submitBtn = $('#submit-booking-btn');
     const originalText = submitBtn.innerHTML;
-    
+
     // Cambiar estado a cargando
     submitBtn.classList.add('disabled');
     submitBtn.setAttribute('disabled', 'true');
@@ -1263,7 +1319,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        
+
         if (!response.ok) {
           console.warn('Respuesta de webhook no exitosa:', response.status);
         }
@@ -1274,10 +1330,10 @@
 
     // Actualizar pantalla de éxito
     successDateLabel.textContent = `${formattedDate} a las ${selectedSlot.split(' - ')[0]}`;
-    
+
     // Transicionar al paso 3
     changeStep(3);
-    
+
     // Restablecer botón
     submitBtn.classList.remove('disabled');
     submitBtn.removeAttribute('disabled');

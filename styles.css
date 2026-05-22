@@ -2352,6 +2352,35 @@ body.modal-open {
   box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
 }
 
+/* Slot ocupado — bloqueado */
+.slot-btn.slot-booked {
+  opacity: 0.38;
+  cursor: not-allowed;
+  text-decoration: line-through;
+  text-decoration-color: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: var(--border);
+  color: var(--text-faint);
+  pointer-events: none;
+  font-style: italic;
+}
+
+/* Skeleton loader mientras consulta Supabase */
+.slot-skeleton {
+  padding: 10px 14px;
+  border-radius: 8px;
+  height: 40px;
+  background: linear-gradient(90deg, var(--bg-card) 25%, rgba(148,163,184,0.1) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: slot-shimmer 1.2s infinite ease-in-out;
+  border: 1px solid var(--border);
+}
+
+@keyframes slot-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Form Styles */
 .booking-form-element {
   display: flex;
