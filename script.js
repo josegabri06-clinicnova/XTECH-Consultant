@@ -1400,12 +1400,12 @@
     },
     empresa: {
       steps: [
-        { title: 'Diagnóstico & Auditoría de Core',     desc: 'Mapeamos tus ineficiencias de datos, financieras u operativas.' },
-        { title: 'Diseño de Arquitectura y UX/UI',      desc: 'Creamos prototipos de software personalizados a tus flujos.' },
-        { title: 'Desarrollo de Software Propietario',   desc: 'Programamos tu SaaS, CRM, ERP o portal a medida en sprints quincenales.' },
-        { title: 'Despliegue Cloud & Soporte CTO',       desc: 'Lanzamos el sistema a producción y actuamos como tu equipo de ingeniería.' }
+        { title: 'Inmersión en tu Negocio',             desc: 'Nos integramos en tus operaciones para entender tus cuellos de botella reales desde dentro.' },
+        { title: 'Diseño de la Ruta Digital',            desc: 'Trazamos un plan estratégico a medida combinando software, IA y automatización.' },
+        { title: 'Co-Construcción Activa',              desc: 'Programamos y desplegamos tu sistema propietario paso a paso, de forma ágil.' },
+        { title: 'Acompañamiento Permanente',           desc: 'No desaparecemos: evolucionamos tu tecnología para asegurar tu crecimiento continuo.' }
       ],
-      result: { metric: '100%', label: 'Personalizado · Construimos software propietario para cualquier reto empresarial' }
+      result: { metric: '100%', label: 'Implicación · No somos un proveedor frío, somos tu socio tecnológico estratégico' }
     }
   };
 
