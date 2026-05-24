@@ -129,7 +129,7 @@ strong { color: var(--text); font-weight: 600; }
 
 #navbar.scrolled {
   padding: 10px 0;
-  background: rgba(7, 9, 19, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(24px) saturate(1.2);
   -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border-bottom: 1px solid var(--border);
