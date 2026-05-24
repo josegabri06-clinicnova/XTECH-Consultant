@@ -332,9 +332,9 @@
       animationFrameId = requestAnimationFrame(draw);
     }
 
-    // Mouse tracking relative to canvas using cached rect
+    // Mouse tracking relative to canvas by retrieving rect lazily on mousemove
     const mouseMoveHandler = (e) => {
-      if (!canvasRect) updateCanvasRect();
+      canvasRect = canvas.getBoundingClientRect();
       canvasMouseX = e.clientX - canvasRect.left;
       canvasMouseY = e.clientY - canvasRect.top;
     };
@@ -348,14 +348,9 @@
       resize();
     };
 
-    const scrollHandler = () => {
-      updateCanvasRect();
-    };
-
     canvas.parentElement.addEventListener('mousemove', mouseMoveHandler);
     canvas.parentElement.addEventListener('mouseleave', mouseLeaveHandler);
     window.addEventListener('resize', resizeHandler);
-    window.addEventListener('scroll', scrollHandler, { passive: true });
 
     // Setup intersection observer for off-screen culling
     const observer = new IntersectionObserver((entries) => {
@@ -384,7 +379,6 @@
           canvas.parentElement.removeEventListener('mouseleave', mouseLeaveHandler);
         }
         window.removeEventListener('resize', resizeHandler);
-        window.removeEventListener('scroll', scrollHandler);
       }
     };
   }
