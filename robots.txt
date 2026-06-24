@@ -1,0 +1,9 @@
+# XTech Consultant - robots.txt
+# https://www.xtechconsultant.com
+
+User-agent: *
+Allow: /
+Disallow: /scratch_deck/
+Disallow: /.env.local
+
+Sitemap: https://www.xtechconsultant.com/sitemap.xml

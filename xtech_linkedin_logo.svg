@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="1024" height="1024">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#38bdf8"/>
+      <stop offset="50%"  stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="500" height="500" fill="#0a0a14"/>
+
+  <g filter="url(#glow)" stroke="url(#g)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Inner X lines -->
+    <path d="M120,110 L210,250 L120,390" stroke-width="24"/>
+    <path d="M380,110 L290,250 L380,390" stroke-width="24"/>
+    <path d="M210,250 L250,310 M290,250 L250,190" stroke-width="24"/>
+    <!-- Outer geometric frame -->
+    <path d="M100,100 L220,100 L250,150 L280,100 L400,100 L280,280 L400,400 L280,400 L250,350 L220,400 L100,400 L220,220 Z"
+          stroke-width="16" opacity="0.85"/>
+  </g>
+
+  <!-- XTech text -->
+  <text x="250" y="446" text-anchor="middle"
+        font-family="Inter, Arial, sans-serif" font-weight="700" font-size="88"
+        fill="#ffffff">
+    XTech
+  </text>
+  <!-- Consultant text -->
+  <text x="250" y="485" text-anchor="middle"
+        font-family="Inter, Arial, sans-serif" font-weight="400" font-size="38"
+        fill="#94a3b8">
+    Consultant
+  </text>
+</svg>

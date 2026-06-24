@@ -1,0 +1,79 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1584 396' width='1584' height='396'>
+  <defs>
+    <linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' stop-color='#38bdf8'/>
+      <stop offset='50%' stop-color='#22d3ee'/>
+      <stop offset='100%' stop-color='#34d399'/>
+    </linearGradient>
+    <filter id='glow'>
+      <feGaussianBlur stdDeviation='6' result='blur'/>
+      <feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge>
+    </filter>
+    <linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='0%'>
+      <stop offset='0%' stop-color='#0a0a14'/>
+      <stop offset='60%' stop-color='#0d1520'/>
+      <stop offset='100%' stop-color='#081510'/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width='1584' height='396' fill='url(#bg)'/>
+
+  <!-- Grid lines -->
+  <g stroke='#1e293b' stroke-width='0.5' opacity='0.6'>
+    <line x1='0' y1='66' x2='1584' y2='66'/>
+    <line x1='0' y1='132' x2='1584' y2='132'/>
+    <line x1='0' y1='198' x2='1584' y2='198'/>
+    <line x1='0' y1='264' x2='1584' y2='264'/>
+    <line x1='0' y1='330' x2='1584' y2='330'/>
+    <line x1='264' y1='0' x2='264' y2='396'/>
+    <line x1='528' y1='0' x2='528' y2='396'/>
+    <line x1='792' y1='0' x2='792' y2='396'/>
+    <line x1='1056' y1='0' x2='1056' y2='396'/>
+    <line x1='1320' y1='0' x2='1320' y2='396'/>
+  </g>
+
+  <!-- X Logo (left) -->
+  <g filter='url(#glow)' stroke='url(#g)' fill='none' stroke-linecap='round' stroke-linejoin='round' transform='translate(60, 48) scale(0.6)'>
+    <path d='M120,110 L210,250 L120,390' stroke-width='24'/>
+    <path d='M380,110 L290,250 L380,390' stroke-width='24'/>
+    <path d='M210,250 L250,310 M290,250 L250,190' stroke-width='24'/>
+    <path d='M100,100 L220,100 L250,150 L280,100 L400,100 L280,280 L400,400 L280,400 L250,350 L220,400 L100,400 L220,220 Z' stroke-width='16' opacity='0.85'/>
+  </g>
+
+  <!-- Main text -->
+  <text x='340' y='175' font-family='Inter, Arial, sans-serif' font-weight='800' font-size='72' fill='white'>XTech Consultant</text>
+
+  <!-- Subtitle gradient -->
+  <text x='342' y='228' font-family='Inter, Arial, sans-serif' font-weight='600' font-size='32' fill='#22d3ee'>Automatización · IA · SaaS · Big Data</text>
+
+  <!-- Tagline -->
+  <text x='344' y='272' font-family='Inter, Arial, sans-serif' font-weight='400' font-size='22' fill='#64748b'>Tu competencia ya automatizó. ¿Y tú?</text>
+
+  <!-- Divider -->
+  <rect x='340' y='292' width='600' height='1' fill='#1e293b'/>
+
+  <!-- Stack pills -->
+  <rect x='342' y='310' width='88' height='26' rx='13' fill='#0f172a' stroke='#22d3ee' stroke-width='1' opacity='0.8'/>
+  <text x='386' y='328' font-family='Inter, Arial, sans-serif' font-size='13' fill='#22d3ee' text-anchor='middle'>Pipeline</text>
+
+  <rect x='442' y='310' width='115' height='26' rx='13' fill='#0f172a' stroke='#34d399' stroke-width='1' opacity='0.8'/>
+  <text x='500' y='328' font-family='Inter, Arial, sans-serif' font-size='13' fill='#34d399' text-anchor='middle'>IA Cognitiva</text>
+
+  <rect x='569' y='310' width='92' height='26' rx='13' fill='#0f172a' stroke='#38bdf8' stroke-width='1' opacity='0.8'/>
+  <text x='615' y='328' font-family='Inter, Arial, sans-serif' font-size='13' fill='#38bdf8' text-anchor='middle'>Supabase</text>
+
+  <rect x='673' y='310' width='84' height='26' rx='13' fill='#0f172a' stroke='#818cf8' stroke-width='1' opacity='0.8'/>
+  <text x='715' y='328' font-family='Inter, Arial, sans-serif' font-size='13' fill='#818cf8' text-anchor='middle'>Next.js</text>
+
+  <!-- Node decorations right side -->
+  <circle cx='1200' cy='100' r='5' fill='#22d3ee' opacity='0.6'/>
+  <circle cx='1350' cy='180' r='4' fill='#34d399' opacity='0.5'/>
+  <circle cx='1480' cy='120' r='6' fill='#38bdf8' opacity='0.4'/>
+  <circle cx='1100' cy='260' r='4' fill='#22d3ee' opacity='0.4'/>
+  <circle cx='1420' cy='300' r='5' fill='#34d399' opacity='0.5'/>
+  <line x1='1200' y1='100' x2='1350' y2='180' stroke='#22d3ee' stroke-width='0.7' opacity='0.3'/>
+  <line x1='1350' y1='180' x2='1480' y2='120' stroke='#34d399' stroke-width='0.7' opacity='0.3'/>
+  <line x1='1100' y1='260' x2='1350' y2='180' stroke='#38bdf8' stroke-width='0.7' opacity='0.3'/>
+  <line x1='1350' y1='180' x2='1420' y2='300' stroke='#22d3ee' stroke-width='0.7' opacity='0.3'/>
+</svg>
