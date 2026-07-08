@@ -571,7 +571,7 @@
         { value: '98%', label: 'Tasa de lectura WhatsApp' },
         { value: '3 sem', label: 'Tiempo hasta resultados' }
       ],
-      tech: ['n8n', 'WhatsApp Business API', 'Stripe', 'Supabase', 'Next.js', 'PostgreSQL', 'Webhooks', 'Cron Jobs']
+      tech: ['Pipeline', 'WhatsApp Enterprise API', 'Stripe (PCI-DSS)', 'Supabase Enterprise', 'Next.js', 'PostgreSQL', 'APIs en Tiempo Real', 'Motores de Programación (Cron)']
     },
 
     kontai: {
@@ -602,7 +602,7 @@
         { value: '200+', label: 'Facturas/mes procesadas' },
         { value: '20min→4s', label: 'Antes vs ahora' }
       ],
-      tech: ['GPT-4 Vision', 'OCR avanzado', 'n8n', 'Holded API', 'Supabase', 'WhatsApp API', 'Gmail API', 'PDF Parser']
+      tech: ['IA Cognitiva (Vision)', 'Procesamiento IDP', 'Pipeline', 'Holded API', 'Supabase Enterprise', 'WhatsApp Enterprise API', 'Gmail API', 'PDF Parser']
     },
 
     '4stancias': {
@@ -633,7 +633,7 @@
         { value: '0', label: 'Conflictos de reserva' },
         { value: '4.9★', label: 'Media de valoraciones' }
       ],
-      tech: ['n8n', 'WhatsApp Business API', 'Booking API', 'Airbnb API', 'Calendar Sync', 'Supabase', 'PDF Generator', 'Google Sheets']
+      tech: ['Pipeline', 'WhatsApp Enterprise API', 'Booking API', 'Airbnb API', 'Sincronización Multicanal', 'Supabase Enterprise', 'Generación de Informes PDF', 'Google Workspace API']
     },
 
     staysync: {
@@ -664,7 +664,7 @@
         { value: '+23%', label: 'Reserva directa' },
         { value: '20→6', label: 'Emails diarios' }
       ],
-      tech: ['Beds24', 'n8n', 'WhatsApp Business API', 'Supabase', 'Booking.com API', 'Expedia API', 'CRM custom', 'Webhooks']
+      tech: ['Beds24 Sync', 'Pipeline', 'WhatsApp Enterprise API', 'Supabase Enterprise', 'Booking.com Enterprise API', 'Expedia API', 'CRM Propietario', 'APIs en Tiempo Real']
     }
   };
 
@@ -1033,6 +1033,8 @@
   // ── B2B CALENDAR BOOKING SYSTEM ─────────────────────
   const calendarDaysGrid = $('#calendar-days-grid');
   const calendarMonthYear = $('#calendar-month-year');
+  const btnPrevMonth = $('#calendar-prev-month');
+  const btnNextMonth = $('#calendar-next-month');
   const bookingSlotsContainer = $('#booking-slots-container');
   const slotsGrid = $('#slots-grid');
   const selectedDayLabel = $('#selected-day-label');
@@ -1045,6 +1047,9 @@
 
   let selectedDate = null;
   let selectedSlot = null;
+  let currentMonth = new Date().getMonth();
+  let currentYear = new Date().getFullYear();
+  let daysToRender = [];
 
   // Las horas laborables de 1h
   const workingHours = [
@@ -1136,7 +1141,40 @@
 
   function initBookingSystem() {
     if (!calendarDaysGrid) return;
+
+    // Generar la lista de días laborables válidos (12 en total)
+    const today = new Date();
+    let dayCounter = 0;
+    let checkDate = new Date(today);
+    // Empezar mañana para evitar reservas en el mismo día
+    checkDate.setDate(checkDate.getDate() + 1);
+
+    daysToRender = [];
+    while (dayCounter < 12) {
+      const dayOfWeek = checkDate.getDay();
+      // Bloquear fines de semana (0 = Domingo, 6 = Sábado)
+      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+        daysToRender.push(new Date(checkDate));
+        dayCounter++;
+      }
+      checkDate.setDate(checkDate.getDate() + 1);
+    }
+
+    // Sincronizar mes/año del calendario al primer día disponible
+    if (daysToRender.length > 0) {
+      currentMonth = daysToRender[0].getMonth();
+      currentYear = daysToRender[0].getFullYear();
+    }
+
     renderCalendar();
+
+    // Navegación de meses
+    if (btnPrevMonth) {
+      btnPrevMonth.addEventListener('click', () => changeMonth(-1));
+    }
+    if (btnNextMonth) {
+      btnNextMonth.addEventListener('click', () => changeMonth(1));
+    }
 
     // Acciones de Pasos
     btnToStep2.addEventListener('click', () => changeStep(2));
@@ -1147,6 +1185,16 @@
         selectedDate = null;
         selectedSlot = null;
         bookingForm.reset();
+        
+        // Resetear visualización al mes del primer día disponible
+        if (daysToRender.length > 0) {
+          currentMonth = daysToRender[0].getMonth();
+          currentYear = daysToRender[0].getFullYear();
+        } else {
+          currentMonth = new Date().getMonth();
+          currentYear = new Date().getFullYear();
+        }
+        
         renderCalendar();
         bookingSlotsContainer.style.display = 'none';
         btnToStep2.classList.add('disabled');
@@ -1159,65 +1207,134 @@
     bookingForm.addEventListener('submit', handleBookingSubmit);
   }
 
-  function renderCalendar() {
-    const today = new Date();
-    calendarDaysGrid.innerHTML = '';
-
-    // Mostrar mes actual / siguiente
-    calendarMonthYear.textContent = `${monthNames[today.getMonth()]} / ${monthNames[(today.getMonth() + 1) % 12]} ${today.getFullYear()}`;
-
-    // Obtener los próximos 14 días naturales para filtrar 10 días laborables válidos
-    let dayCounter = 0;
-    let checkDate = new Date(today);
-    // Empezar mañana para evitar reservas en el mismo día
-    checkDate.setDate(checkDate.getDate() + 1);
-
-    // Generar la rejilla de días
-    const daysToRender = [];
-
-    while (dayCounter < 12) {
-      const dayOfWeek = checkDate.getDay();
-      // Bloquear fines de semana (0 = Domingo, 6 = Sábado)
-      if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-        daysToRender.push(new Date(checkDate));
-        dayCounter++;
-      }
-      checkDate.setDate(checkDate.getDate() + 1);
+  function changeMonth(dir) {
+    let newMonth = currentMonth + dir;
+    let newYear = currentYear;
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear--;
+    } else if (newMonth > 11) {
+      newMonth = 0;
+      newYear++;
     }
 
-    // Renderizar botones redondos con el número y el nombre abreviado del día
-    daysToRender.forEach(date => {
+    // Comprobaciones de límites
+    const today = new Date();
+    const todayMonth = today.getMonth();
+    const todayYear = today.getFullYear();
+    
+    // No permitir ir antes del mes actual
+    if (newYear < todayYear || (newYear === todayYear && newMonth < todayMonth)) {
+      return;
+    }
+    
+    // No permitir ir más allá del mes con el último día disponible
+    if (daysToRender.length > 0) {
+      const maxDate = daysToRender[daysToRender.length - 1];
+      const maxMonth = maxDate.getMonth();
+      const maxYear = maxDate.getFullYear();
+      if (newYear > maxYear || (newYear === maxYear && newMonth > maxMonth)) {
+        return;
+      }
+    }
+
+    currentMonth = newMonth;
+    currentYear = newYear;
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    calendarDaysGrid.innerHTML = '';
+
+    // Mostrar el mes y año actual de visualización
+    calendarMonthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+    // Obtener primer día de este mes y calcular su índice de día de la semana
+    // JS getDay(): 0 = Domingo, 1 = Lunes, ..., 6 = Sábado.
+    // Queremos Lunes = 0, Martes = 1, ..., Domingo = 6.
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const startDayIndex = (firstDay.getDay() + 6) % 7;
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Renderizar celdas vacías (spacers) para los días de la semana anteriores al inicio del mes
+    for (let i = 0; i < startDayIndex; i++) {
+      const spacer = document.createElement('div');
+      spacer.className = 'calendar-spacer';
+      calendarDaysGrid.appendChild(spacer);
+    }
+
+    // Renderizar todos los días del mes
+    const today = new Date();
+    
+    for (let day = 1; day <= totalDays; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      
       const dayDiv = document.createElement('button');
       dayDiv.type = "button";
       dayDiv.className = 'calendar-day';
+      dayDiv.textContent = day;
+      dayDiv.title = `${dayNames[date.getDay()]} ${day} de ${monthNames[date.getMonth()]}`;
 
-      const dayNum = date.getDate();
-      dayDiv.textContent = dayNum;
-      dayDiv.title = `${dayNames[date.getDay()]} ${dayNum} de ${monthNames[date.getMonth()]}`;
+      // Comprobar si es un día disponible (laborable dentro del rango de los próximos 12 días laborables)
+      const isAvailable = daysToRender.some(d => isSameDay(d, date));
 
-      // Si es el seleccionado
-      if (selectedDate && isSameDay(date, selectedDate)) {
-        dayDiv.classList.add('selected');
+      if (isAvailable) {
+        // Si es el seleccionado
+        if (selectedDate && isSameDay(date, selectedDate)) {
+          dayDiv.classList.add('selected');
+        }
+
+        // Si es hoy
+        if (isSameDay(date, today)) {
+          dayDiv.classList.add('today');
+        }
+
+        dayDiv.addEventListener('click', () => {
+          // Deseleccionar anteriores
+          $$('.calendar-day', calendarDaysGrid).forEach(el => el.classList.remove('selected'));
+          dayDiv.classList.add('selected');
+
+          selectedDate = date;
+          selectedSlot = null; // reset slot al cambiar día
+
+          // Deshabilitar botón continuar
+          btnToStep2.classList.add('disabled');
+          btnToStep2.setAttribute('disabled', 'true');
+
+          // Mostrar slots
+          showSlotsForDate(date);
+        });
+      } else {
+        // Si no está disponible (fin de semana o fuera de rango)
+        dayDiv.classList.add('disabled');
+        dayDiv.setAttribute('disabled', 'true');
       }
 
-      dayDiv.addEventListener('click', () => {
-        // Deseleccionar anteriores
-        $$('.calendar-day', calendarDaysGrid).forEach(el => el.classList.remove('selected'));
-        dayDiv.classList.add('selected');
-
-        selectedDate = date;
-        selectedSlot = null; // reset slot al cambiar día
-
-        // Deshabilitar botón continuar
-        btnToStep2.classList.add('disabled');
-        btnToStep2.setAttribute('disabled', 'true');
-
-        // Mostrar slots
-        showSlotsForDate(date);
-      });
-
       calendarDaysGrid.appendChild(dayDiv);
-    });
+    }
+
+    // Actualizar estados habilitado/deshabilitado de los botones de navegación
+    const todayMonth = today.getMonth();
+    const todayYear = today.getFullYear();
+
+    if (btnPrevMonth) {
+      if (currentYear === todayYear && currentMonth === todayMonth) {
+        btnPrevMonth.setAttribute('disabled', 'true');
+      } else {
+        btnPrevMonth.removeAttribute('disabled');
+      }
+    }
+
+    if (btnNextMonth && daysToRender.length > 0) {
+      const maxDate = daysToRender[daysToRender.length - 1];
+      const maxMonth = maxDate.getMonth();
+      const maxYear = maxDate.getFullYear();
+      if (currentYear === maxYear && currentMonth === maxMonth) {
+        btnNextMonth.setAttribute('disabled', 'true');
+      } else {
+        btnNextMonth.removeAttribute('disabled');
+      }
+    }
   }
 
   function isSameDay(d1, d2) {
@@ -1377,7 +1494,7 @@
     contabilidad: {
       steps: [
         { title: 'Conciliación Bancaria & Cobros',    desc: 'Entrada unificada de facturas recibidas por email, WhatsApp o ERP.' },
-        { title: 'Extracción Contable con IA',          desc: 'GPT-4 Vision procesa bases imponibles, IVA e IRPF sin errores humanos.' },
+        { title: 'Extracción Contable con IA',          desc: 'Modelos de visión artificial y procesamiento cognitivo sin errores humanos.' },
         { title: 'Sincronización con Holded / A3',     desc: 'Exportación directa de asientos contables estructurados en tiempo real.' },
         { title: 'Dashboard de Control Financiero',     desc: 'Previsión de caja, IVA acumulado y analítica financiera a un clic.' }
       ],
@@ -1497,6 +1614,289 @@
   // Inicializar todo
   initSectorDemo();
   initBookingSystem();
+
+
+  // ═══════════════════════════════════════════════════
+  // INTERACTIVE AUTOMATION SIMULATOR
+  // ═══════════════════════════════════════════════════
+
+  (function initSimulator() {
+    const SIM_DATA = {
+      clinica: {
+        title: 'Gestión inteligente de citas médicas',
+        deployTime: '2-3 semanas',
+        nodes: [
+          { icon: '📱', label: 'Paciente', detail: 'Solicita cita online', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
+          { icon: '🤖', label: 'ClinicNova IA', detail: 'Verifica disponibilidad', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
+          { icon: '⚙️', label: 'Pipeline', detail: 'Agenda automáticamente', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+          { icon: '💬', label: 'WhatsApp', detail: 'Envía recordatorio', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
+        ],
+        status: [
+          'Recibiendo solicitud de cita…',
+          'IA verificando disponibilidad en tiempo real…',
+          'Agendando cita en el calendario…',
+          '✓ Confirmación y recordatorio enviados por WhatsApp'
+        ],
+        before: [
+          { val: '4h/día', desc: 'gestionando citas' },
+          { val: '30%', desc: 'pacientes no aparecen' },
+          { val: '~8', desc: 'errores de agenda/sem' }
+        ],
+        after: [
+          { val: '0h', desc: 'gestión manual' },
+          { val: '-61%', desc: 'ausencias' },
+          { val: '0', desc: 'errores de agenda' }
+        ]
+      },
+      gestoria: {
+        title: 'Procesamiento automático de facturas',
+        deployTime: '2-4 semanas',
+        nodes: [
+          { icon: '📧', label: 'Email', detail: 'Recibe factura PDF', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
+          { icon: '🧠', label: 'IA Cognitiva + IDP', detail: 'Extrae datos contables', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
+          { icon: '⚙️', label: 'Pipeline', detail: 'Valida y clasifica', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+          { icon: '📊', label: 'Holded / ERP', detail: 'Registra automáticamente', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
+        ],
+        status: [
+          'Factura detectada en bandeja de entrada…',
+          'IA extrayendo importe, IVA, proveedor y fecha…',
+          'Validando datos y clasificando por categoría…',
+          '✓ Factura registrada en Holded automáticamente'
+        ],
+        before: [
+          { val: '20 min', desc: 'por factura' },
+          { val: '12', desc: 'errores contables/mes' },
+          { val: '60h', desc: 'manuales al mes' }
+        ],
+        after: [
+          { val: '4.2 seg', desc: 'por factura' },
+          { val: '0', desc: 'errores contables' },
+          { val: '0h', desc: 'trabajo manual' }
+        ]
+      },
+      hotel: {
+        title: 'Check-in digital y coordinación automática',
+        deployTime: '3-4 semanas',
+        nodes: [
+          { icon: '🏨', label: 'Reserva', detail: 'Confirmada en Booking', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
+          { icon: '💬', label: 'WhatsApp', detail: 'Bienvenida + instrucciones', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
+          { icon: '🔑', label: 'Check-in', detail: 'Acceso digital sin llave', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+          { icon: '🧹', label: 'Limpieza', detail: 'Asignada automáticamente', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
+        ],
+        status: [
+          'Nueva reserva detectada en el channel manager…',
+          'Enviando mensaje de bienvenida por WhatsApp…',
+          'Generando código de acceso digital…',
+          '✓ Limpieza asignada al equipo correspondiente'
+        ],
+        before: [
+          { val: '20', desc: 'emails manuales/día' },
+          { val: '25h', desc: 'de gestión/semana' },
+          { val: '3-5', desc: 'overbookings al mes' }
+        ],
+        after: [
+          { val: '0', desc: 'emails manuales' },
+          { val: '30 min', desc: 'de gestión/semana' },
+          { val: '0', desc: 'overbookings' }
+        ]
+      },
+      comercio: {
+        title: 'Captación y respuesta automática a leads',
+        deployTime: '2-3 semanas',
+        nodes: [
+          { icon: '🌐', label: 'Web / Redes', detail: 'Lead entra por formulario', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
+          { icon: '🤖', label: 'IA', detail: 'Cualifica e interpreta', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
+          { icon: '📋', label: 'CRM', detail: 'Ficha creada y asignada', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+          { icon: '✉️', label: 'Email', detail: 'Respuesta personalizada', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
+        ],
+        status: [
+          'Nuevo lead recibido desde el formulario…',
+          'IA analizando perfil, intención y urgencia…',
+          'Ficha creada en CRM y asignada a ventas…',
+          '✓ Email personalizado enviado en < 1 minuto'
+        ],
+        before: [
+          { val: '2h', desc: 'tiempo respuesta medio' },
+          { val: '40%', desc: 'leads sin respuesta' },
+          { val: 'Manual', desc: 'seguimiento comercial' }
+        ],
+        after: [
+          { val: '< 1 min', desc: 'tiempo de respuesta' },
+          { val: '0%', desc: 'leads perdidos' },
+          { val: '100%', desc: 'seguimiento auto' }
+        ]
+      }
+    };
+
+    // DOM references
+    const pipeline = $('#sim-pipeline');
+    const flowTitle = $('#sim-flow-title');
+    const statusText = $('#sim-status-text');
+    const progressFill = $('#sim-progress-fill');
+    const comparison = $('#sim-comparison');
+    const colBefore = $('#sim-col-before');
+    const colAfter = $('#sim-col-after');
+    const bottomCta = $('#sim-bottom-cta');
+    const deployTime = $('#sim-deploy-time');
+    const replayBtn = $('#sim-replay-btn');
+    const sectorBtns = $$('.sim-sector');
+
+    if (!pipeline) return;
+
+    let currentSector = 'clinica';
+    let animTimeouts = [];
+    let hasAutoPlayed = false;
+
+    function clearAnimations() {
+      animTimeouts.forEach(t => clearTimeout(t));
+      animTimeouts = [];
+    }
+
+    function renderPipeline(sector) {
+      const data = SIM_DATA[sector];
+      if (!data) return;
+
+      clearAnimations();
+      currentSector = sector;
+
+      // Reset everything
+      pipeline.innerHTML = '';
+      flowTitle.textContent = data.title;
+      flowTitle.classList.remove('visible');
+      statusText.textContent = '';
+      progressFill.style.width = '0%';
+      comparison.classList.remove('visible');
+      bottomCta.classList.remove('visible');
+      colBefore.innerHTML = '';
+      colAfter.innerHTML = '';
+      deployTime.textContent = data.deployTime;
+
+      // Build nodes and connectors
+      data.nodes.forEach((node, i) => {
+        const el = document.createElement('div');
+        el.className = 'sim-node';
+        el.style.setProperty('--node-color', node.color);
+        el.style.setProperty('--node-glow', node.glow);
+        el.innerHTML = `
+          <div class="sim-node-icon">${node.icon}</div>
+          <div class="sim-node-label">${node.label}</div>
+          <div class="sim-node-detail">${node.detail}</div>
+        `;
+        pipeline.appendChild(el);
+
+        if (i < data.nodes.length - 1) {
+          const conn = document.createElement('div');
+          conn.className = 'sim-connector';
+          conn.innerHTML = '<div class="sim-connector-line"></div>';
+          pipeline.appendChild(conn);
+        }
+      });
+
+      // Animate sequence
+      requestAnimationFrame(() => {
+        // Show flow title
+        animTimeouts.push(setTimeout(() => {
+          flowTitle.classList.add('visible');
+        }, 100));
+
+        const nodes = pipeline.querySelectorAll('.sim-node');
+        const connectors = pipeline.querySelectorAll('.sim-connector');
+        const stepDelay = 700;
+
+        nodes.forEach((node, i) => {
+          const delay = 300 + i * stepDelay;
+
+          // Activate node
+          animTimeouts.push(setTimeout(() => {
+            node.classList.add('active');
+            node.classList.add('processing');
+            statusText.textContent = data.status[i];
+            progressFill.style.width = ((i + 1) / data.nodes.length * 100) + '%';
+
+            // Remove processing pulse after a beat
+            animTimeouts.push(setTimeout(() => {
+              node.classList.remove('processing');
+            }, 500));
+          }, delay));
+
+          // Activate connector after node
+          if (i < connectors.length) {
+            animTimeouts.push(setTimeout(() => {
+              connectors[i].classList.add('active');
+            }, delay + 350));
+          }
+        });
+
+        // Show comparison cards after all nodes
+        const totalDelay = 300 + data.nodes.length * stepDelay + 300;
+
+        animTimeouts.push(setTimeout(() => {
+          // Before column
+          colBefore.innerHTML = `
+            <div class="sim-compare-label">❌ Sin automatización</div>
+            ${data.before.map(m => `
+              <div class="sim-metric-row">
+                <span class="sim-metric-val">${m.val}</span>
+                <span class="sim-metric-desc">${m.desc}</span>
+              </div>
+            `).join('')}
+          `;
+
+          // After column
+          colAfter.innerHTML = `
+            <div class="sim-compare-label">✅ Con XTech</div>
+            ${data.after.map(m => `
+              <div class="sim-metric-row">
+                <span class="sim-metric-val">${m.val}</span>
+                <span class="sim-metric-desc">${m.desc}</span>
+              </div>
+            `).join('')}
+          `;
+
+          comparison.classList.add('visible');
+        }, totalDelay));
+
+        // Show CTA
+        animTimeouts.push(setTimeout(() => {
+          bottomCta.classList.add('visible');
+        }, totalDelay + 400));
+      });
+    }
+
+    // Sector tab clicks
+    sectorBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sectorBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        renderPipeline(btn.dataset.sim);
+      });
+    });
+
+    // Replay button
+    if (replayBtn) {
+      replayBtn.addEventListener('click', () => {
+        renderPipeline(currentSector);
+      });
+    }
+
+    // Auto-play when section scrolls into view
+    const simSection = $('#simulador');
+    if (simSection && 'IntersectionObserver' in window) {
+      const simObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !hasAutoPlayed) {
+            hasAutoPlayed = true;
+            renderPipeline(currentSector);
+          }
+        });
+      }, { threshold: 0.25 });
+      simObserver.observe(simSection);
+    }
+  })();
 
 
 })();

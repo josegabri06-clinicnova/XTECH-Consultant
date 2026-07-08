@@ -1,0 +1,20 @@
+0 verbose cli /usr/local/bin/node /usr/local/bin/npm
+1 info using npm@11.3.0
+2 info using node@v24.2.0
+3 silly config load:file:/usr/local/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/josegabriel/Desktop/XTech Consultant/.npmrc
+5 silly config load:file:/Users/josegabriel/.npmrc
+6 silly config load:file:/usr/local/etc/npmrc
+7 verbose title npm install
+8 verbose argv "install" "--cache" "./.npm-cache"
+9 verbose logfile logs-max:10 dir:/Users/josegabriel/Desktop/XTech Consultant/.npm-cache/_logs/2026-07-08T14_05_22_087Z-
+10 verbose logfile /Users/josegabriel/Desktop/XTech Consultant/.npm-cache/_logs/2026-07-08T14_05_22_087Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 http fetch GET https://registry.npmjs.org/npm attempt 1 failed with ENOTFOUND
+14 silly idealTree buildDeps
+15 silly fetch manifest next@^14.2.4
+16 silly packumentCache full:https://registry.npmjs.org/next cache-miss
+17 http fetch GET https://registry.npmjs.org/next attempt 1 failed with ENOTFOUND
+18 http fetch GET https://registry.npmjs.org/npm attempt 2 failed with ENOTFOUND
+19 http fetch GET https://registry.npmjs.org/next attempt 2 failed with ENOTFOUND

@@ -1,3 +1,6 @@
 .vercel
 .env*
 .DS_Store
+node_modules/
+scratch_deck/
+xtech_pitch_deck.pptx
