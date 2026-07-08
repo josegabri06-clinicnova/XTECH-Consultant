@@ -234,6 +234,132 @@ export default function Home() {
     startSectorDemoRotation(); // Reset timer
   };
 
+  // ── MASTER CLIENT-SIDE EFFECT (Scroll Reveals, Cinema Text, Magnetic Buttons, Scroll Progress) ──
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // 1. Scroll reveal (.reveal-up -> .visible)
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            revealObserver.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -50px 0px' }
+    );
+    document.querySelectorAll('.reveal-up').forEach((el) => revealObserver.observe(el));
+
+    // 2. Scroll progress bar
+    const progressFill = document.getElementById('scroll-progress');
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = scrollMax > 0 ? scrollY / scrollMax : 0;
+      if (progressFill) {
+        progressFill.style.transform = `scaleX(${pct})`;
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // 3. Cinema text animation (word-by-word reveal)
+    const setupCinemaText = () => {
+      const elements = document.querySelectorAll('[data-reveal="words"]');
+      const items = Array.from(elements).map((el) => {
+        const text = el.textContent.trim();
+        el.innerHTML = '';
+        const words = text.split(/\s+/).map((word) => {
+          const span = document.createElement('span');
+          span.className = 'word';
+          span.textContent = word;
+          el.appendChild(span);
+          el.appendChild(document.createTextNode(' '));
+          return span;
+        });
+        return {
+          element: el,
+          words,
+          top: 0,
+        };
+      });
+
+      const updateOffsets = () => {
+        const scrollY = window.scrollY;
+        items.forEach((item) => {
+          const rect = item.element.getBoundingClientRect();
+          item.top = rect.top + scrollY;
+        });
+      };
+      
+      updateOffsets();
+      window.addEventListener('resize', updateOffsets);
+
+      const updateCinemaScroll = () => {
+        const vh = window.innerHeight;
+        const scrollY = window.scrollY;
+
+        items.forEach((item) => {
+          const progress = 1 - (item.top - scrollY) / (vh * 0.75);
+          const clamped = Math.max(0, Math.min(1, progress));
+
+          item.words.forEach((word, i) => {
+            const wordProgress = i / item.words.length;
+            const shouldBeLit = clamped > wordProgress;
+            word.classList.toggle('lit', shouldBeLit);
+          });
+        });
+      };
+
+      window.addEventListener('scroll', updateCinemaScroll, { passive: true });
+      updateCinemaScroll();
+
+      return () => {
+        window.removeEventListener('resize', updateOffsets);
+        window.removeEventListener('scroll', updateCinemaScroll);
+      };
+    };
+
+    const cleanupCinema = setupCinemaText();
+
+    // 4. Magnetic buttons
+    const magneticBtns = document.querySelectorAll('.magnetic-btn');
+    const mouseHandlers = Array.from(magneticBtns).map((btn) => {
+      const onMouseMove = (e) => {
+        const rect = btn.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) * 0.25;
+        const dy = (e.clientY - cy) * 0.25;
+        btn.style.transform = `translate(${dx}px, ${dy}px)`;
+      };
+
+      const onMouseLeave = () => {
+        btn.style.transform = '';
+        btn.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+        setTimeout(() => {
+          btn.style.transition = '';
+        }, 500);
+      };
+
+      btn.addEventListener('mousemove', onMouseMove);
+      btn.addEventListener('mouseleave', onMouseLeave);
+
+      return { btn, onMouseMove, onMouseLeave };
+    });
+
+    return () => {
+      revealObserver.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+      cleanupCinema();
+      mouseHandlers.forEach(({ btn, onMouseMove, onMouseLeave }) => {
+        btn.removeEventListener('mousemove', onMouseMove);
+        btn.removeEventListener('mouseleave', onMouseLeave);
+      });
+    };
+  }, []);
+
   // Cálculos ROI
   const savings = useMemo(() => {
     const annual = Math.round(roiHours * 52 * roiCost * 0.85);
