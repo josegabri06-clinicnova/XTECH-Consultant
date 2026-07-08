@@ -443,6 +443,7 @@ export default function Home() {
       {/* HERO */}
       <section id="hero">
         <ParticleCanvas
+          id="particle-canvas"
           count={35}
           maxDist={120}
           speed={0.12}
@@ -586,7 +587,7 @@ export default function Home() {
       {/* INTERSTITIAL 1 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text lit">
+          <p className="cinema-text" data-reveal="words">
             Tu competencia ya automatizó lo que tú haces a mano. Cada semana que pasa, la brecha se hace más grande. Y no se cierra sola.
           </p>
         </div>
@@ -657,7 +658,7 @@ export default function Home() {
       {/* INTERSTITIAL 2 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text lit">
+          <p className="cinema-text" data-reveal="words">
             No necesitas más herramientas. Necesitas que alguien conecte las que ya tienes, automatice lo que te roba tiempo, y construya lo que no existe en el mercado.
           </p>
         </div>
@@ -721,7 +722,7 @@ export default function Home() {
       {/* INTERSTITIAL 3 */}
       <section className="interstitial interstitial-accent">
         <div className="container">
-          <p className="cinema-text cinema-small lit">
+          <p className="cinema-text cinema-small" data-reveal="words">
             "¿Y si lo que necesito no existe en el mercado?" — Exacto. Por eso lo construimos nosotros.
           </p>
         </div>
@@ -1149,7 +1150,7 @@ export default function Home() {
       {/* INTERSTITIAL 4 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text lit">
+          <p className="cinema-text" data-reveal="words">
             Cada uno de estos productos se diseñó, construyó y lanzó en menos de 4 semanas. El tuyo también puede estarlo.
           </p>
         </div>
@@ -1337,6 +1338,7 @@ export default function Home() {
       {/* FINAL CTA & BOOKING COMPONENT */}
       <section id="contacto" className="section section-cta-final">
         <ParticleCanvas
+          id="cta-canvas"
           count={15}
           maxDist={90}
           speed={0.1}

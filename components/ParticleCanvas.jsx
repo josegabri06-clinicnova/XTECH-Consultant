@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 
 export default function ParticleCanvas({
+  id = 'particle-canvas',
   count = 35,
   maxDist = 120,
   speed = 0.12,
@@ -204,5 +205,5 @@ export default function ParticleCanvas({
     };
   }, [count, maxDist, speed, mouseRadius, baseColor, accentColor]);
 
-  return <canvas ref={canvasRef} className={className} aria-hidden="true" style={{ display: 'block', width: '100%', height: '100%' }} />;
+  return <canvas ref={canvasRef} id={id} className={className} aria-hidden="true" style={{ display: 'block', width: '100%', height: '100%' }} />;
 }
