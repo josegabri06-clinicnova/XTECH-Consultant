@@ -76,6 +76,11 @@ export default function BookingCalendar() {
   const [revenue, setRevenue] = useState('');
   const [bottleneck, setBottleneck] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Sincronizar mes/año inicial al primer día válido
   useEffect(() => {
@@ -257,6 +262,10 @@ export default function BookingCalendar() {
     }
     setStep(1);
   };
+
+  if (!mounted) {
+    return <div className="booking-card" style={{ minHeight: '520px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="loader" style={{ color: 'var(--accent)', fontWeight: 500 }}>Cargando calendario...</span></div>;
+  }
 
   return (
     <div className="booking-card">

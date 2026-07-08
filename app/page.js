@@ -167,6 +167,53 @@ const sectorDemoData = {
   }
 };
 
+const CinemaText = ({ text, className = "" }) => {
+  const words = React.useMemo(() => text.split(/\s+/), [text]);
+  const elRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+
+    const updateCinemaScroll = () => {
+      const vh = window.innerHeight;
+      const scrollY = window.scrollY;
+      const rect = el.getBoundingClientRect();
+      const top = rect.top + scrollY;
+
+      // El progreso del scroll en relación a la pantalla (se ilumina al llegar al 75% del viewport)
+      const progress = 1 - (top - scrollY) / (vh * 0.75);
+      const clamped = Math.max(0, Math.min(1, progress));
+
+      const wordSpans = el.querySelectorAll('.word');
+      wordSpans.forEach((word, i) => {
+        const wordProgress = i / wordSpans.length;
+        const shouldBeLit = clamped > wordProgress;
+        word.classList.toggle('lit', shouldBeLit);
+      });
+    };
+
+    window.addEventListener('scroll', updateCinemaScroll, { passive: true });
+    window.addEventListener('resize', updateCinemaScroll);
+    updateCinemaScroll();
+
+    return () => {
+      window.removeEventListener('scroll', updateCinemaScroll);
+      window.removeEventListener('resize', updateCinemaScroll);
+    };
+  }, [words]);
+
+  return (
+    <p ref={elRef} className={`cinema-text ${className}`}>
+      {words.map((word, i) => (
+        <span key={i} className="word">
+          {word}{" "}
+        </span>
+      ))}
+    </p>
+  );
+};
+
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState(null);
@@ -264,66 +311,7 @@ export default function Home() {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // 3. Cinema text animation (word-by-word reveal)
-    const setupCinemaText = () => {
-      const elements = document.querySelectorAll('[data-reveal="words"]');
-      const items = Array.from(elements).map((el) => {
-        const text = el.textContent.trim();
-        el.innerHTML = '';
-        const words = text.split(/\s+/).map((word) => {
-          const span = document.createElement('span');
-          span.className = 'word';
-          span.textContent = word;
-          el.appendChild(span);
-          el.appendChild(document.createTextNode(' '));
-          return span;
-        });
-        return {
-          element: el,
-          words,
-          top: 0,
-        };
-      });
-
-      const updateOffsets = () => {
-        const scrollY = window.scrollY;
-        items.forEach((item) => {
-          const rect = item.element.getBoundingClientRect();
-          item.top = rect.top + scrollY;
-        });
-      };
-      
-      updateOffsets();
-      window.addEventListener('resize', updateOffsets);
-
-      const updateCinemaScroll = () => {
-        const vh = window.innerHeight;
-        const scrollY = window.scrollY;
-
-        items.forEach((item) => {
-          const progress = 1 - (item.top - scrollY) / (vh * 0.75);
-          const clamped = Math.max(0, Math.min(1, progress));
-
-          item.words.forEach((word, i) => {
-            const wordProgress = i / item.words.length;
-            const shouldBeLit = clamped > wordProgress;
-            word.classList.toggle('lit', shouldBeLit);
-          });
-        });
-      };
-
-      window.addEventListener('scroll', updateCinemaScroll, { passive: true });
-      updateCinemaScroll();
-
-      return () => {
-        window.removeEventListener('resize', updateOffsets);
-        window.removeEventListener('scroll', updateCinemaScroll);
-      };
-    };
-
-    const cleanupCinema = setupCinemaText();
-
-    // 4. Magnetic buttons
+    // 3. Magnetic buttons
     const magneticBtns = document.querySelectorAll('.magnetic-btn');
     const mouseHandlers = Array.from(magneticBtns).map((btn) => {
       const onMouseMove = (e) => {
@@ -352,7 +340,6 @@ export default function Home() {
     return () => {
       revealObserver.disconnect();
       window.removeEventListener('scroll', handleScroll);
-      cleanupCinema();
       mouseHandlers.forEach(({ btn, onMouseMove, onMouseLeave }) => {
         btn.removeEventListener('mousemove', onMouseMove);
         btn.removeEventListener('mouseleave', onMouseLeave);
@@ -587,9 +574,7 @@ export default function Home() {
       {/* INTERSTITIAL 1 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text" data-reveal="words">
-            Tu competencia ya automatizó lo que tú haces a mano. Cada semana que pasa, la brecha se hace más grande. Y no se cierra sola.
-          </p>
+          <CinemaText text="Tu competencia ya automatizó lo que tú haces a mano. Cada semana que pasa, la brecha se hace más grande. Y no se cierra sola." />
         </div>
       </section>
 
@@ -658,9 +643,7 @@ export default function Home() {
       {/* INTERSTITIAL 2 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text" data-reveal="words">
-            No necesitas más herramientas. Necesitas que alguien conecte las que ya tienes, automatice lo que te roba tiempo, y construya lo que no existe en el mercado.
-          </p>
+          <CinemaText text="No necesitas más herramientas. Necesitas que alguien conecte las que ya tienes, automatice lo que te roba tiempo, y construya lo que no existe en el mercado." />
         </div>
       </section>
 
@@ -722,9 +705,7 @@ export default function Home() {
       {/* INTERSTITIAL 3 */}
       <section className="interstitial interstitial-accent">
         <div className="container">
-          <p className="cinema-text cinema-small" data-reveal="words">
-            "¿Y si lo que necesito no existe en el mercado?" — Exacto. Por eso lo construimos nosotros.
-          </p>
+          <CinemaText className="cinema-small" text='"¿Y si lo que necesito no existe en el mercado?" — Exacto. Por eso lo construimos nosotros.' />
         </div>
       </section>
 
@@ -1150,9 +1131,7 @@ export default function Home() {
       {/* INTERSTITIAL 4 */}
       <section className="interstitial">
         <div className="container">
-          <p className="cinema-text" data-reveal="words">
-            Cada uno de estos productos se diseñó, construyó y lanzó en menos de 4 semanas. El tuyo también puede estarlo.
-          </p>
+          <CinemaText text="Cada uno de estos productos se diseñó, construyó y lanzó en menos de 4 semanas. El tuyo también puede estarlo." />
         </div>
       </section>
 
