@@ -4307,6 +4307,11 @@ body.modal-open {
 /* ── SAAS CONSOLE: LOGIN & REGISTRATION ─────────────── */
 /* ───────────────────────────────────────────────────── */
 .login-page {
+  --bg: #030712;
+  --text: #F9FAFB;
+  --sub: #9CA3AF;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
   position: relative;
   min-height: 100vh;
   background: var(--bg);
@@ -4492,9 +4497,14 @@ body.modal-open {
 /* ── SAAS CONSOLE: DASHBOARD LAYOUT ─────────────────── */
 /* ───────────────────────────────────────────────────── */
 .dashboard-layout {
+  --bg: #030712;
+  --text: #F9FAFB;
+  --sub: #9CA3AF;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
   display: flex;
   min-height: 100vh;
-  background: #030712;
+  background: var(--bg);
   color: var(--text);
 }
 
