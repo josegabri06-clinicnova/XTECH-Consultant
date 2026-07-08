@@ -4302,3 +4302,615 @@ body.modal-open {
   .sim-node-detail { font-size: 10px; }
   .sim-metric-val { font-size: 15px; }
 }
+
+/* ───────────────────────────────────────────────────── */
+/* ── SAAS CONSOLE: LOGIN & REGISTRATION ─────────────── */
+/* ───────────────────────────────────────────────────── */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px var(--pad);
+  overflow: hidden;
+}
+
+.login-header {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  z-index: 10;
+}
+
+.login-card-container {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 2;
+}
+
+.login-card-inner {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.login-card-inner:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.login-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.login-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 16px;
+  color: var(--sub);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  text-align: center;
+}
+
+.login-tab-btn.active {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 2px solid var(--accent);
+}
+
+.login-card-body {
+  padding: 40px 32px;
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  color: var(--sub);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sub);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-password-link {
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-btn {
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.demo-hint-box {
+  background: rgba(37, 99, 235, 0.05);
+  border: 1px dashed rgba(37, 99, 235, 0.25);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
+.demo-hint-box code {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.login-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.login-alert.success {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: #10b981;
+}
+
+.login-alert.error {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+/* ───────────────────────────────────────────────────── */
+/* ── SAAS CONSOLE: DASHBOARD LAYOUT ─────────────────── */
+/* ───────────────────────────────────────────────────── */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #030712;
+  color: var(--text);
+}
+
+.dashboard-sidebar {
+  width: 280px;
+  background: #0b0f19;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 40px;
+}
+
+.badge-console {
+  align-self: flex-start;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.05em;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.menu-item {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--sub);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.menu-item:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.menu-item.active {
+  color: var(--text);
+  background: rgba(37, 99, 235, 0.1);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-profile-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-company {
+  font-size: 11px;
+  color: var(--sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-logout {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  width: 100%;
+}
+
+.btn-logout:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.dashboard-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 40px 48px;
+}
+
+.dashboard-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+}
+
+.dashboard-topbar h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.system-health {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--sub);
+}
+
+.health-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 8px #10b981;
+}
+
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.welcome-banner h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.welcome-banner p {
+  color: var(--sub);
+  font-size: 13px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.kpi-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.kpi-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sub);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.kpi-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sub);
+  letter-spacing: 0;
+}
+
+.kpi-desc {
+  font-size: 12px;
+  color: var(--sub);
+  line-height: 1.4;
+}
+
+.dash-section {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.dash-section h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activity-item {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.act-time {
+  width: 90px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sub);
+  flex-shrink: 0;
+}
+
+.activity-item p {
+  color: var(--sub);
+}
+
+.activity-item strong {
+  color: var(--text);
+}
+
+.dashboard-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #030712;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── KONTAI WORKSPACE ── */
+.invoice-upload-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.invoice-upload-box h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.invoice-upload-box p {
+  color: var(--sub);
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.upload-form {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.file-input {
+  max-width: 320px;
+}
+
+.upload-progress-text {
+  font-size: 12px;
+  color: var(--accent);
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.invoices-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.invoices-table th,
+.invoices-table td {
+  padding: 16px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.invoices-table th {
+  font-weight: 700;
+  color: var(--sub);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+.invoices-table td code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: inline-block;
+}
+
+.status-badge.procesada {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-badge.pendiente {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.status-badge.procesando {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* ── CLINICNOVA WORKSPACE ── */
+.integration-status-card {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  padding-bottom: 8px;
+}
+
+.status-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  .dashboard-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

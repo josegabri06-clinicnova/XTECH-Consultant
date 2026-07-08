@@ -402,6 +402,7 @@ export default function Home() {
             <li><a href="#proyectos">Proyectos</a></li>
             <li><a href="#proceso">Proceso</a></li>
             <li><a href="#faq">FAQ</a></li>
+            <li><a href="/login" style={{ color: 'var(--accent)', fontWeight: '600' }}>Área Cliente</a></li>
           </ul>
           <a href="#contacto" className="nav-cta magnetic-btn" id="nav-cta">
             <span>Hablar con un experto</span>
@@ -422,6 +423,7 @@ export default function Home() {
             <li><a href="#proyectos" onClick={() => setIsMobileMenuOpen(false)}>Proyectos</a></li>
             <li><a href="#proceso" onClick={() => setIsMobileMenuOpen(false)}>Proceso</a></li>
             <li><a href="#faq" onClick={() => setIsMobileMenuOpen(false)}>FAQ</a></li>
+            <li><a href="/login" onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'var(--accent)' }}>Área Cliente</a></li>
             <li><a href="#contacto" className="mobile-cta" onClick={() => setIsMobileMenuOpen(false)}>Hablar con un experto</a></li>
           </ul>
         </div>
@@ -1418,6 +1420,7 @@ export default function Home() {
                   <li><a href="#proceso">Proceso</a></li>
                   <li><a href="#faq">FAQ</a></li>
                   <li><a href="#contacto">Contacto</a></li>
+                  <li><a href="/login" style={{ color: 'var(--accent)', fontWeight: '600' }}>Área Cliente</a></li>
                 </ul>
               </div>
             </div>
