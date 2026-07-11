@@ -11,7 +11,7 @@ const projectData = {
     tag: 'Salud',
     tagClass: 'tag-emerald',
     name: 'ClinicNova',
-    subtitle: 'Gestión integral de clínicas con recordatorios inteligentes por WhatsApp, citas online y cobros automatizados con Stripe.',
+    subtitle: 'Gestión integral de clínicas con recordatorios inteligentes por WhatsApp, citas online y cobros automáticos con tarjeta.',
     bigStat: '-61%',
     bigLabel: 'ausencias de pacientes',
     problem: {
@@ -20,13 +20,13 @@ const projectData = {
     },
     solution: {
       title: 'Un sistema que confirma, recuerda y cobra sin intervención humana',
-      text: 'ClinicNova envía recordatorios automáticos por WhatsApp 48h y 2h antes de cada cita. El paciente confirma, cancela o reagenda con un solo clic. Si cancela, el sistema ofrece el hueco a otros pacientes en lista de espera. Después de la consulta, el cobro se procesa automáticamente con Stripe. Cero llamadas. Cero persecuciones.'
+      text: 'ClinicNova envía recordatorios automáticos por WhatsApp 48h y 2h antes de cada cita. El paciente confirma, cancela o reagenda con un solo clic. Si cancela, el sistema ofrece el hueco a otros pacientes en lista de espera. Después de la consulta, el cobro se procesa automáticamente con tarjeta. Cero llamadas. Cero persecuciones.'
     },
     steps: [
       { title: 'Paciente reserva online', desc: 'Calendario inteligente integrado en la web de la clínica. El paciente elige día, hora y especialista.' },
       { title: 'WhatsApp automático 48h antes', desc: 'El sistema envía recordatorio con botones de confirmar, cancelar o reagendar. Sin instalar nada.' },
       { title: 'Confirmación o reasignación', desc: 'Si cancela, el hueco se ofrece automáticamente al siguiente paciente en lista de espera.' },
-      { title: 'Cobro con Stripe post-consulta', desc: 'Facturación automática tras la visita. Sin pasar por caja. Sin fricción.' }
+      { title: 'Cobro con tarjeta post-consulta', desc: 'Facturación automática tras la visita. Sin pasar por caja. Sin fricción.' }
     ],
     metrics: [
       { value: '-61%', label: 'Menos ausencias' },
@@ -34,14 +34,14 @@ const projectData = {
       { value: '98%', label: 'Tasa de lectura WhatsApp' },
       { value: '3 sem', label: 'Tiempo hasta resultados' }
     ],
-    tech: ['Pipeline', 'WhatsApp Enterprise API', 'Stripe (PCI-DSS)', 'Supabase Enterprise', 'Next.js', 'PostgreSQL', 'APIs en Tiempo Real', 'Motores de Programación (Cron)']
+    tech: ['Conectores automáticos', 'Canal de mensajería rápida', 'Cobros en línea seguros', 'Almacenamiento blindado', 'Estructura web ultraveloz', 'Base de datos corporativa', 'Sincronización instantánea', 'Temporizadores inteligentes']
   },
 
   kontai: {
     tag: 'Contabilidad',
     tagClass: 'tag-cyan',
     name: 'KontAI',
-    subtitle: 'OCR con inteligencia artificial que lee facturas, extrae datos contables, calcula impuestos y exporta a tu gestoría en segundos.',
+    subtitle: 'Lectura inteligente con inteligencia artificial que lee facturas, extrae datos contables, calcula impuestos y exporta a tu gestoría en segundos.',
     bigStat: '4.2s',
     bigLabel: 'por factura procesada',
     problem: {
@@ -50,21 +50,21 @@ const projectData = {
     },
     solution: {
       title: 'IA que lee, clasifica y exporta facturas en 4.2 segundos',
-      text: 'KontAI recibe facturas por email, WhatsApp o subida manual. GPT-4 con OCR extrae todos los campos contables: emisor, NIF/CIF, base imponible, tipo de IVA, retención IRPF, fecha, número de factura. Clasifica automáticamente el gasto por categoría contable y exporta a Holded, A3 o cualquier ERP. Sin copiar ni pegar. Sin errores humanos.'
+      text: 'KontAI recibe facturas por email, WhatsApp o subida manual. La inteligencia artificial lectora extrae todos los campos contables: emisor, NIF/CIF, base imponible, tipo de IVA, retención IRPF, fecha, número de factura. Clasifica automáticamente el gasto por categoría contable y exporta a tu sistema contable. Sin copiar ni pegar. Sin errores humanos.'
     },
     steps: [
       { title: 'Recepción automática', desc: 'La factura llega por email, WhatsApp o se sube manualmente. El sistema la detecta automáticamente.' },
-      { title: 'OCR + GPT-4 extrae datos', desc: 'Lee el documento, identifica campos (NIF, importes, IVA, IRPF) y estructura la información en formato contable.' },
+      { title: 'La IA lee y extrae datos', desc: 'Lee el documento, identifica campos (NIF, importes, IVA, IRPF) y estructura la información en formato contable.' },
       { title: 'Clasificación inteligente', desc: 'Asigna categoría contable, detecta duplicados y marca anomalías para revisión humana.' },
-      { title: 'Exportación a ERP', desc: 'Los datos salen listos para Holded, A3 o Excel. Un clic y están en tu gestoría.' }
+      { title: 'Exportación a ERP', desc: 'Los datos salen listos para tu programa de contabilidad o Excel. Un clic y están en tu gestoría.' }
     ],
     metrics: [
       { value: '4.2s', label: 'Por factura' },
-      { value: '99.2%', label: 'Precisión OCR' },
+      { value: '99.2%', label: 'Precisión de la IA' },
       { value: '200+', label: 'Facturas/mes procesadas' },
       { value: '20min→4s', label: 'Antes vs ahora' }
     ],
-    tech: ['IA Cognitiva (Vision)', 'Procesamiento IDP', 'Pipeline', 'Holded API', 'Supabase Enterprise', 'WhatsApp Enterprise API', 'Gmail API', 'PDF Parser']
+    tech: ['Inteligencia Artificial Visual', 'Lectura Inteligente de PDF', 'Conectores automáticos', 'Integración ERP', 'Almacenamiento blindado', 'Canal de mensajería rápida', 'Integración de correo electrónico', 'Procesador de archivos']
   },
 
   '4stancias': {
@@ -80,28 +80,28 @@ const projectData = {
     },
     solution: {
       title: 'Todo automatizado. Solo 30 minutos a la semana.',
-      text: '4Stancias sincroniza todas las OTAs en tiempo real, envía mensajes automáticos al huésped en cada fase (pre-llegada, check-in, check-out), coordina la limpieza automáticamente con el equipo, genera check-in digital con documentación legal, y centraliza toda la comunicación en un solo panel. El propietario pasa de 30 horas a 30 minutos semanales.'
+      text: '4Stancias sincroniza todas las plataformas de alquiler en tiempo real, envía mensajes automáticos al huésped en cada fase (pre-llegada, check-in, check-out), coordina la limpieza automáticamente con el equipo, genera check-in digital con documentación legal, y centraliza toda la comunicación en un solo panel. El propietario pasa de 30 horas a 30 minutos semanales.'
     },
     steps: [
-      { title: 'Reserva detectada', desc: 'El sistema detecta la nueva reserva en cualquier OTA o directa y sincroniza calendarios automáticamente.' },
+      { title: 'Reserva detectada', desc: 'El sistema detecta la nueva reserva en cualquier plataforma o directa y sincroniza calendarios automáticamente.' },
       { title: 'Mensajes pre-llegada', desc: 'WhatsApp automático al huésped: instrucciones de llegada, código de acceso, normas de la casa.' },
       { title: 'Check-in digital', desc: 'El huésped sube su documentación desde el móvil. Se genera el parte de viajeros para la policía automáticamente.' },
       { title: 'Coordinación de limpieza', desc: 'Al hacer checkout, el equipo de limpieza recibe la alerta con los detalles del próximo huésped.' }
     ],
     metrics: [
       { value: '30min', label: 'Gestión semanal' },
-      { value: '100%', label: 'Sincronización OTAs' },
+      { value: '100%', label: 'Sincronización de canales' },
       { value: '0', label: 'Conflictos de reserva' },
       { value: '4.9★', label: 'Media de valoraciones' }
     ],
-    tech: ['Pipeline', 'WhatsApp Enterprise API', 'Booking API', 'Airbnb API', 'Sincronización Multicanal', 'Supabase Enterprise', 'Generación de Informes PDF', 'Google Workspace API']
+    tech: ['Conectores automáticos', 'Canal de mensajería rápida', 'Integración de reservas', 'Sincronización de canales', 'Conexión de bases de datos', 'Creador de informes automatizado', 'Integración de oficina virtual']
   },
 
   staysync: {
     tag: 'Hotelería',
     tagClass: 'tag-violet',
     name: 'StaySync',
-    subtitle: 'Channel Manager + CRM + comunicación automatizada por WhatsApp para hoteles. Todas las OTAs sincronizadas en tiempo real.',
+    subtitle: 'Gestor de canales + CRM + comunicación automatizada por WhatsApp para hoteles. Todas las plataformas de reservas sincronizadas en tiempo real.',
     bigStat: '0',
     bigLabel: 'overbookings',
     problem: {
@@ -110,12 +110,12 @@ const projectData = {
     },
     solution: {
       title: 'Sincronización en tiempo real. Cero overbookings. Cero.',
-      text: 'StaySync conecta todos los canales de venta del hotel en un solo panel con sincronización bidireccional en tiempo real vía Beds24. Cuando entra una reserva en Booking, la disponibilidad se actualiza en todos los demás canales en menos de 30 segundos. Además, el CRM integrado clasifica huéspedes y los mensajes automáticos por WhatsApp mejoran la experiencia pre y post-estancia.'
+      text: 'StaySync conecta todos los canales de venta del hotel en un solo panel con sincronización bidireccional en tiempo real vía nuestro gestor de canales. Cuando entra una reserva en Booking, la disponibilidad se actualiza en todos los demás canales en menos de 30 segundos. Además, el CRM integrado clasifica huéspedes y los mensajes automáticos por WhatsApp mejoran la experiencia pre y post-estancia.'
     },
     steps: [
-      { title: 'Conexión de canales', desc: 'Beds24 sincroniza Booking, Expedia, HotelBeds y web propia en tiempo real. Un solo panel.' },
-      { title: 'Reserva → CRM automático', desc: 'Cada reserva crea un perfil de huésped con historial, preferencias y canal de origen.' },
-      { title: 'WhatsApp pre-estancia', desc: 'Mensaje automático con confirmación, instrucciones de llegada y upselling personalizado.' },
+      { title: 'Conexión de canales', desc: 'El gestor de canales sincroniza Booking, Expedia, HotelBeds y web propia en tiempo real. Un solo panel.' },
+      { title: 'Reserva → Gestión automática', desc: 'Cada reserva crea un perfil de huésped con historial, preferencias y canal de origen.' },
+      { title: 'WhatsApp pre-estancia', desc: 'Mensaje automático con confirmación, instrucciones de llegada y servicios adicionales.' },
       { title: 'Post-estancia y fidelización', desc: 'Encuesta de satisfacción + invitación a reserva directa con descuento exclusivo.' }
     ],
     metrics: [
@@ -124,7 +124,7 @@ const projectData = {
       { value: '+23%', label: 'Reserva directa' },
       { value: '20→6', label: 'Emails diarios' }
     ],
-    tech: ['Beds24 Sync', 'Pipeline', 'WhatsApp Enterprise API', 'Supabase Enterprise', 'Booking.com Enterprise API', 'Expedia API', 'CRM Propietario', 'APIs en Tiempo Real']
+    tech: ['Sincronización multicanal', 'Conectores automáticos', 'Canal de mensajería rápida', 'Base de datos segura', 'Integración de canales hoteleros', 'Gestor de relaciones (CRM)', 'Sincronización instantánea']
   }
 };
 
@@ -730,13 +730,13 @@ export default function Home() {
               <div className="service-row-main">
                 <div className="service-num">01</div>
                 <div className="service-info">
-                  <h3>Automatización de Procesos con IA y n8n</h3>
+                  <h3>Automatización de Procesos con IA</h3>
                   <p>Agentes y flujos que ejecutan procesos de back-office, WhatsApp y lectura inteligente de documentos.</p>
                 </div>
                 <div className="service-pills">
-                  <span className="pill pill-sky">n8n / Make</span>
-                  <span className="pill pill-sky">IA Cognitiva</span>
-                  <span className="pill pill-sky">WhatsApp Business API</span>
+                  <span className="pill pill-sky">Integración de Sistemas</span>
+                  <span className="pill pill-sky">Lector Inteligente con IA</span>
+                  <span className="pill pill-sky">Canal WhatsApp Seguro</span>
                 </div>
                 <div className="service-toggle-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -754,8 +754,8 @@ export default function Home() {
                       <p>Inyección automática de facturas desde email a Holded y A3 mediante <strong>KontAI</strong>.</p>
                     </div>
                     <div className="sd-card">
-                      <h5>Stack Técnico</h5>
-                      <p>n8n, Make, OpenAI Assistants, Python, Webhooks seguros, APIs.</p>
+                      <h5>Tecnología Aplicada</h5>
+                      <p>Motores de integración automática, Inteligencia Artificial avanzada, y Conectores de correo seguros.</p>
                     </div>
                     <div className="sd-card">
                       <h5>Plazo de Entrega</h5>
@@ -812,13 +812,13 @@ export default function Home() {
               <div className="service-row-main">
                 <div className="service-num">03</div>
                 <div className="service-info">
-                  <h3>Desarrollo de Software y SaaS a Medida (Next.js & Supabase)</h3>
-                  <p>Desarrollo front y back de plataformas SaaS ultra-rápidas y aplicaciones nativas optimizadas.</p>
+                  <h3>Desarrollo de Software y Portales de Cliente a Medida</h3>
+                  <p>Desarrollo front y back de plataformas online ultra-rápidas y aplicaciones nativas optimizadas.</p>
                 </div>
                 <div className="service-pills">
-                  <span className="pill pill-violet">Next.js / React</span>
-                  <span className="pill pill-violet">Supabase (Postgres)</span>
-                  <span className="pill pill-violet">Vercel Cloud</span>
+                  <span className="pill pill-violet">Estructura Web Moderna</span>
+                  <span className="pill pill-violet">Almacenamiento de Datos Seguro</span>
+                  <span className="pill pill-violet">Servidores en la Nube</span>
                 </div>
                 <div className="service-toggle-icon" aria-hidden="true">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -836,8 +836,8 @@ export default function Home() {
                       <p>Portal web multi-inquilino para clínicas con cobros recurrentes vía Stripe y agenda dinámica (**ClinicNova**).</p>
                     </div>
                     <div className="sd-card">
-                      <h5>Stack Técnico</h5>
-                      <p>React/Next.js, Supabase, TypeScript, PostgreSQL, Vercel, Node.js.</p>
+                      <h5>Tecnología Aplicada</h5>
+                      <p>Sistemas web reactivos, Bases de datos seguras y encriptadas, Almacenamiento en la nube de alta disponibilidad.</p>
                     </div>
                     <div className="sd-card">
                       <h5>Plazo de Entrega</h5>
@@ -1015,7 +1015,7 @@ export default function Home() {
               </div>
 
               <div className="roi-cta-box">
-                <p>Este ahorro equivale al <strong>85%</strong> de eficiencia operativa automatizando con n8n e Inteligencia Artificial.</p>
+                <p>Este ahorro equivale al <strong>85%</strong> de eficiencia operativa optimizando tus procesos mediante Inteligencia Artificial.</p>
                 <a href="#contacto" className="btn-primary magnetic-btn" style={{ width: '100%', justifyContent: 'center' }}>
                   <span>Automatizar este proceso ahora</span>
                 </a>
@@ -1047,13 +1047,13 @@ export default function Home() {
                 </div>
                 <h3 className="project-name">ClinicNova</h3>
               </div>
-              <p className="project-desc">Software a medida para gestión de clínicas médicas. Incluye citas online, recordatorios automáticos por WhatsApp y cobros automatizados con Stripe. <strong>Reduce ausencias un 61%</strong>.</p>
+              <p className="project-desc">Software a medida para gestión de clínicas médicas. Incluye citas online, recordatorios automáticos por WhatsApp y cobros automatizados con tarjeta. <strong>Reduce ausencias un 61%</strong>.</p>
               <div className="project-result">
                 <span className="project-big">-61%</span>
                 <span className="project-what">ausencias de pacientes</span>
               </div>
               <div className="project-stack">
-                <span>n8n / Make</span><span>WhatsApp API</span><span>Stripe</span><span>Supabase</span>
+                <span>Integraciones</span><span>WhatsApp Seguro</span><span>Pagos Online</span><span>Base de Datos</span>
               </div>
               <button className="project-enter" onClick={() => setActiveProject('clinicnova')} aria-label="Ver proyecto ClinicNova">
                 <span>Explorar proyecto</span>
@@ -1069,13 +1069,13 @@ export default function Home() {
                 </div>
                 <h3 className="project-name">KontAI</h3>
               </div>
-              <p className="project-desc">Automatización de contabilidad y lectura de facturas con IA. Lectura cognitiva OCR de facturas PDF, cálculo de IVA/IRPF y exportación a ERP. <strong>4.2 segundos por factura</strong>.</p>
+              <p className="project-desc">Automatización de contabilidad y lectura de facturas con IA. Lectura inteligente de facturas PDF con IA, cálculo de IVA/IRPF y exportación a tu sistema contable. <strong>4.2 segundos por factura</strong>.</p>
               <div className="project-result">
                 <span className="project-big">4.2s</span>
                 <span className="project-what">por factura procesada</span>
               </div>
               <div className="project-stack">
-                <span>IA Cognitiva</span><span>OCR inteligente</span><span>n8n Workflow</span><span>Supabase</span>
+                <span>Lectura IA</span><span>Clasificador Inteligente</span><span>Flujo Automático</span><span>Almacenamiento Seguro</span>
               </div>
               <button className="project-enter" onClick={() => setActiveProject('kontai')} aria-label="Ver proyecto KontAI">
                 <span>Explorar proyecto</span>
@@ -1091,13 +1091,13 @@ export default function Home() {
                 </div>
                 <h3 className="project-name">4Stancias</h3>
               </div>
-              <p className="project-desc">Automatización n8n para apartamentos turísticos. Check-in digital automatizado, mensajes por WhatsApp y sincronización con Channel Manager. <strong>Solo 30 minutos semanales</strong>.</p>
+              <p className="project-desc">Automatización para apartamentos turísticos. Check-in digital automatizado, mensajes por WhatsApp y sincronización de reservas. <strong>Solo 30 minutos semanales</strong>.</p>
               <div className="project-result">
                 <span className="project-big">30min</span>
                 <span className="project-what">de gestión por semana</span>
               </div>
               <div className="project-stack">
-                <span>n8n / Make</span><span>WhatsApp API</span><span>Calendar Sync</span>
+                <span>Integraciones</span><span>Mensajería WhatsApp</span><span>Sincronización</span>
               </div>
               <button className="project-enter" onClick={() => setActiveProject('4stancias')} aria-label="Ver proyecto 4Stancias">
                 <span>Explorar proyecto</span>
@@ -1113,13 +1113,13 @@ export default function Home() {
                 </div>
                 <h3 className="project-name">StaySync</h3>
               </div>
-              <p className="project-desc">SaaS de hotelería con CRM y automatización de WhatsApp. Channel Manager (Beds24) conectado con bases de datos Supabase. <strong>Evita overbookings en tiempo real.</strong></p>
+              <p className="project-desc">Plataforma de hotelería con gestor de clientes y automatización de WhatsApp. Sincronización multicanal de reservas en la nube. <strong>Evita overbookings en tiempo real.</strong></p>
               <div className="project-result">
                 <span className="project-big">0</span>
                 <span className="project-what">overbookings</span>
               </div>
               <div className="project-stack">
-                <span>Beds24 API</span><span>n8n Workflow</span><span>WhatsApp API</span><span>Supabase</span>
+                <span>Sincronizador</span><span>Flujos Automáticos</span><span>WhatsApp Seguro</span><span>Base de Datos</span>
               </div>
               <button className="project-enter" onClick={() => setActiveProject('staysync')} aria-label="Ver proyecto StaySync">
                 <span>Explorar proyecto</span>

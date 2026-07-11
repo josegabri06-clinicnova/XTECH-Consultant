@@ -63,7 +63,7 @@ export default function Dashboard() {
       const newInv = {
         id: String(invoices.length + 1),
         date: new Date().toLocaleDateString('es-ES'),
-        emisor: 'Factura Subida (Procesando OCR...)',
+        emisor: 'Factura Subida (Leyendo factura con IA...)',
         nif: 'Buscando...',
         base: 0,
         tax: 0,
@@ -181,7 +181,7 @@ export default function Dashboard() {
                 <div className="kpi-card">
                   <div className="kpi-title">Facturas Procesadas con IA</div>
                   <div className="kpi-value text-cyan">4 / 4</div>
-                  <p className="kpi-desc">100% de éxito en lectura OCR cognitiva sin intervención humana.</p>
+                  <p className="kpi-desc">100% de éxito en lectura inteligente automatizada con IA sin intervención humana.</p>
                 </div>
                 <div className="kpi-card">
                   <div className="kpi-title">ROI Acumulado Estimado</div>
@@ -204,7 +204,7 @@ export default function Dashboard() {
                   </div>
                   <div className="activity-item">
                     <span className="act-time">05/07/2026</span>
-                    <p>🛠️ <strong>CTO Externo</strong>: Configuración inicial de la integración del webhook en n8n completada con éxito.</p>
+                    <p>🛠️ <strong>CTO Externo</strong>: Configuración inicial de la integración del sistema de reservas completada con éxito.</p>
                   </div>
                 </div>
               </div>
@@ -311,11 +311,11 @@ export default function Dashboard() {
                     <strong className="text-emerald">✓ CONECTADO</strong>
                   </div>
                   <div className="status-row">
-                    <span>Calendario Sincronizado (Supabase):</span>
-                    <strong className="text-emerald">✓ ACTIVO</strong>
+                    <span>Sincronización del Calendario:</span>
+                    <strong className="text-emerald">✓ ACTIVA</strong>
                   </div>
                   <div className="status-row">
-                    <span>Webhook de Recepción (n8n):</span>
+                    <span>Servicio de Integración y Flujo:</span>
                     <strong className="text-emerald">✓ CONECTADO</strong>
                   </div>
                 </div>

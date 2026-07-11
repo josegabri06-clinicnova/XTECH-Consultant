@@ -11,8 +11,8 @@ const inter = Inter({
 
 export const metadata = {
   title: 'Consultoría Tecnológica & Automatización IA para PYMEs | XTech Consultant',
-  description: '¿Quieres optimizar tu empresa? XTech diseña y desarrolla automatizaciones de procesos con IA (n8n, Make), desarrollo de software a medida y dashboards de Big Data. ROI garantizado. Diagnóstico gratis.',
-  keywords: 'consultoría tecnológica, automatización n8n, consultor supabase, desarrollo Next.js, integración HubSpot Salesforce, automatización IA PYMEs, Big Data business intelligence, desarrollo apps a medida, transformación digital, software a medida España, automatización empresas, desarrollo SaaS, inteligencia artificial negocios',
+  description: '¿Quieres optimizar tu empresa? XTech diseña y desarrolla automatizaciones de procesos con IA, desarrollo de software a medida y dashboards de Big Data. ROI garantizado. Diagnóstico gratis.',
+  keywords: 'consultoría tecnológica, automatización de procesos, consultor de software, desarrollo web, integración de sistemas, automatización IA PYMEs, Big Data business intelligence, desarrollo apps a medida, transformación digital, software a medida España, automatización empresas, desarrollo SaaS, inteligencia artificial negocios',
   authors: [{ name: 'XTech Consultant' }],
   robots: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
   alternates: {
@@ -22,7 +22,7 @@ export const metadata = {
     type: 'website',
     url: 'https://www.xtechconsultant.com/',
     title: 'XTech Consultant — Automatización IA & Consultoría Tecnológica para PYMEs',
-    description: 'Tu competencia ya automatizó. Socios tecnológicos expertos en automatización de procesos con IA (n8n, Make), desarrollo de software a medida y dashboards de negocio. Diagnóstico gratis.',
+    description: 'Tu competencia ya automatizó. Socios tecnológicos expertos en automatización de procesos con IA, desarrollo de software a medida y dashboards de negocio. Diagnóstico gratis.',
     images: [
       {
         url: 'https://www.xtechconsultant.com/og-image.png',
@@ -79,17 +79,16 @@ export default function RootLayout({ children }) {
       'Automatización con Inteligencia Artificial',
       'Big Data y Business Intelligence',
       'Desarrollo de aplicaciones web y móvil',
-      'CRM y migraciones de sistemas',
+      'CRM y de gestión interna',
       'Consultoría y auditoría tecnológica',
-      'Pipelines de integración',
-      'GPT-4',
-      'Supabase',
-      'Next.js',
-      'n8n',
-      'Make',
-      'OpenAI API',
-      'Salesforce',
-      'HubSpot',
+      'Sistemas de integración',
+      'Modelos de Inteligencia Artificial',
+      'Bases de datos seguras',
+      'Desarrollo de software a medida',
+      'Automatización de procesos',
+      'Integración de sistemas',
+      'Soluciones de Inteligencia Artificial',
+      'Sincronización automática de software',
       'Automatización de facturas'
     ],
     'sameAs': [

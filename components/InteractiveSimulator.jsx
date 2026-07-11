@@ -9,12 +9,12 @@ const SIM_DATA = {
     nodes: [
       { icon: '📱', label: 'Paciente', detail: 'Solicita cita online', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
       { icon: '🤖', label: 'ClinicNova IA', detail: 'Verifica disponibilidad', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
-      { icon: '⚙️', label: 'Pipeline', detail: 'Agenda automáticamente', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+      { icon: '⚙️', label: 'Conexión', detail: 'Agenda automáticamente', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
       { icon: '💬', label: 'WhatsApp', detail: 'Envía recordatorio', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
     ],
     status: [
       'Recibiendo solicitud de cita…',
-      'IA verificando disponibilidad en tiempo real…',
+      'Verificando disponibilidad en tiempo real…',
       'Agendando cita en el calendario…',
       '✓ Confirmación y recordatorio enviados por WhatsApp'
     ],
@@ -34,15 +34,15 @@ const SIM_DATA = {
     deployTime: '2-4 semanas',
     nodes: [
       { icon: '📧', label: 'Email', detail: 'Recibe factura PDF', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
-      { icon: '🧠', label: 'IA Cognitiva + IDP', detail: 'Extrae datos contables', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
-      { icon: '⚙️', label: 'Pipeline', detail: 'Valida y clasifica', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
-      { icon: '📊', label: 'Holded / ERP', detail: 'Registra automáticamente', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
+      { icon: '🧠', label: 'Lectora IA', detail: 'Extrae datos contables', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
+      { icon: '⚙️', label: 'Organizador', detail: 'Valida y clasifica', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
+      { icon: '📊', label: 'Tu ERP', detail: 'Registra automáticamente', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
     ],
     status: [
       'Factura detectada en bandeja de entrada…',
       'IA extrayendo importe, IVA, proveedor y fecha…',
       'Validando datos y clasificando por categoría…',
-      '✓ Factura registrada en Holded automáticamente'
+      '✓ Factura registrada en tu sistema automáticamente'
     ],
     before: [
       { val: '20 min', desc: 'por factura' },
@@ -59,13 +59,13 @@ const SIM_DATA = {
     title: 'Check-in digital y coordinación automática',
     deployTime: '3-4 semanas',
     nodes: [
-      { icon: '🏨', label: 'Reserva', detail: 'Confirmada en Booking', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
+      { icon: '🏨', label: 'Reserva', detail: 'Confirmada online', color: '#3b82f6', glow: 'rgba(59,130,246,0.25)' },
       { icon: '💬', label: 'WhatsApp', detail: 'Bienvenida + instrucciones', color: '#6366f1', glow: 'rgba(99,102,241,0.25)' },
       { icon: '🔑', label: 'Check-in', detail: 'Acceso digital sin llave', color: '#f59e0b', glow: 'rgba(245,158,11,0.25)' },
       { icon: '🧹', label: 'Limpieza', detail: 'Asignada automáticamente', color: '#10b981', glow: 'rgba(16,185,129,0.25)' }
     ],
     status: [
-      'Nueva reserva detectada en el channel manager…',
+      'Nueva reserva detectada en el sistema…',
       'Enviando mensaje de bienvenida por WhatsApp…',
       'Generando código de acceso digital…',
       '✓ Limpieza asignada al equipo correspondiente'
